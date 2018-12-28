@@ -16,12 +16,7 @@ class Store {
         tx.executeSql(
           `CREATE TABLE IF NOT EXISTS Tasks ${TASK}`,
           [],
-          (_, res) => {
-            // tx.executeSql(
-            //   "INSERT INTO Tasks VALUES (?, ?, ?, ?, ?)",
-            //   [1, "First Task", "CONTENT", null, false]
-            // )
-          }
+          (_, res) => {}
         );
 
         tx.executeSql(

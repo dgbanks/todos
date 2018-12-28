@@ -14,7 +14,7 @@ class TaskList extends React.Component {
   }
   render() {
     const { store } = this.props;
-
+    debugger
     if (store.fetching) {
       return (
         <View style={styles.loading}>
@@ -28,7 +28,12 @@ class TaskList extends React.Component {
         <ScrollView>
           {
             store.tasks.map(task => (
-              <CheckBox title={task.title} />
+              <CheckBox
+                title={task.title}
+                checked={task.complete}
+                onIconPress={() => store.updateTask(task.id, { complete: !task.complete })}
+
+              />
             ))
           }
         </ScrollView>

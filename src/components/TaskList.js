@@ -1,6 +1,12 @@
 import React from "react";
-import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import { observer, inject } from "mobx-react";
+import { CheckBox } from "react-native-elements";
+import {
+  View,
+  ScrollView,
+  ActivityIndicator,
+  StyleSheet
+} from "react-native";
 
 class TaskList extends React.Component {
   constructor(props) {
@@ -19,8 +25,13 @@ class TaskList extends React.Component {
 
     return (
       <View>
-        <Text>hello there</Text>
-
+        <ScrollView>
+          {
+            store.tasks.map(task => (
+              <CheckBox title={task.title} />
+            ))
+          }
+        </ScrollView>
       </View>
     );
   }

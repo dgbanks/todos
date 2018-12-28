@@ -1,33 +1,39 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+import React from 'react';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { observer, inject } from "mobx-react";
+import Store from "./src/store";
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+  }
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
-
-type Props = {};
-export default class App extends Component<Props> {
   render() {
+    const { tasks } = this.props.store;
+    if (tasks) {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.welcome}>Welcome to React Native!</Text>
+          <Text style={styles.instructions}>To get started, edit App.js</Text>
+          <Text style={styles.instructions}>something</Text>
+          {
+            tasks.map((t,i) => (
+              <Text key={i}>{t.title}</Text>
+            ))
+          }
+        </View>
+      );
+    }
+
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        <ActivityIndicator size="large" color="black" />
       </View>
     );
   }
 }
+
+export default inject(() => ({ store: Store }))(observer(App));
 
 const styles = StyleSheet.create({
   container: {

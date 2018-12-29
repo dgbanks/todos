@@ -1,12 +1,10 @@
 import { decorate, observable, action, computed } from "mobx";
 import SQLite from "react-native-sqlite-storage";
-
-const TASK = "(id, title, content, parentId, complete)";
-const parseUpdateParams = (params) => (
-  Object.entries(params).map(entry => (
-    `${entry[0]} = "${entry[1]}"`
-  )).join(", ")
-);
+import {
+  taskSchema,
+  parseUpdateTaskParams,
+  parseCreateTaskParams
+} from "./utils/taskUtils";
 
 class Store {
   fetching = true;
@@ -22,7 +20,7 @@ class Store {
       this.database = db;
       db.transaction(tx => {
         tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS Tasks ${TASK}`,
+          `CREATE TABLE IF NOT EXISTS Tasks ${taskSchema}`,
           [],
           (_, res) => {}
         );
@@ -39,18 +37,32 @@ class Store {
     });
   }
 
-  createTask() {
-
-  }
-
-  updateTask(taskId, params) {
-    debugger
+  createTask(params) {
     this.database.transaction(tx => {
       tx.executeSql(
-        `UPDATE Tasks SET ${parseUpdateParams(params)} WHERE id = ${taskId}`,
+        `INSERT INTO Tasks VALUES ${parseCreateTaskParams(params)}`,
         [],
         (_, res) => {
           debugger
+          // this.tasks.push()
+        }
+      )
+    })
+  }
+
+  updateTask(taskId, params) {
+    this.database.transaction(tx => {
+      tx.executeSql(
+        `UPDATE Tasks SET ${parseUpdateTaskParams(params)} WHERE id = ?`,
+        [taskId],
+        (_, res) => {
+          _.executeSql(
+            "SELECT * FROM Tasks WHERE id = ?",
+            [taskId],
+            (_, res) => {
+              this.tasks = this.tasks.filter(t => t.id !== taskId).concat(res.rows.raw());
+            }
+          );
         },
         (_, err) => {
           debugger

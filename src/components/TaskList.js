@@ -12,9 +12,9 @@ class TaskList extends React.Component {
   constructor(props) {
     super(props);
   }
+
   render() {
     const { store } = this.props;
-    debugger
     if (store.fetching) {
       return (
         <View style={styles.loading}>
@@ -31,7 +31,7 @@ class TaskList extends React.Component {
               <CheckBox
                 title={task.title}
                 checked={task.complete}
-                onIconPress={() => store.updateTask(task.id, { complete: !task.complete })}
+                onIconPress={() => store.updateTask(task.id, { complete: task.complete ? 0 : 1 })}
 
               />
             ))

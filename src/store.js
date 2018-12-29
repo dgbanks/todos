@@ -8,11 +8,15 @@ import {
 
 class Store {
   fetching = true;
-  tasks = [];
+  data = [];
   database = {};
 
   constructor(){
     this.getData();
+  }
+
+  get tasks() {
+    return this.data.slice().sort((a,b) => a.title < b.title ? -1 : 1);
   }
 
   getData() {
@@ -29,7 +33,7 @@ class Store {
           "SELECT * FROM Tasks",
           [],
           (_, res) => {
-            this.tasks = res.rows.raw();
+            this.data = res.rows.raw();
             this.fetching = false;
           }
         )
@@ -43,8 +47,18 @@ class Store {
         `INSERT INTO Tasks VALUES ${parseCreateTaskParams(params)}`,
         [],
         (_, res) => {
+          _.executeSql(
+            "SELECT * FROM Tasks WHERE id = ?",
+            [params.id],
+            (_, res) => {
+              this.data = this.data.concat(res.rows.raw());
+            },
+            (_, err) => {
+            }
+          )
+        },
+        (_, err) => {
           debugger
-          // this.tasks.push()
         }
       )
     })
@@ -60,7 +74,7 @@ class Store {
             "SELECT * FROM Tasks WHERE id = ?",
             [taskId],
             (_, res) => {
-              this.tasks = this.tasks.filter(t => t.id !== taskId).concat(res.rows.raw());
+              this.data = this.data.filter(t => t.id !== taskId).concat(res.rows.raw());
             }
           );
         },
@@ -71,15 +85,29 @@ class Store {
     })
   }
 
+  deleteTask(taskId) {
+    this.database.transaction(tx => {
+      tx.executeSql(
+        "DELETE FROM Tasks WHERE id = ?",
+        [taskId],
+        (_, res) => {
+          this.data = this.data.filter(d => d.id !== taskId);
+        }
+      )
+    })
+  }
+
 }
 
 decorate(Store, {
   fetching: observable,
-  tasks: observable,
+  data: observable,
+  tasks: computed,
   database: observable,
   getData: action,
   createTask: action,
-  updateTask: action
+  updateTask: action,
+  deleteTask: action,
 });
 
 export default new Store();

@@ -32,7 +32,7 @@ class TaskList extends React.Component {
                 title={task.title}
                 checked={task.complete}
                 onIconPress={() => store.updateTask(task.id, { complete: task.complete ? 0 : 1 })}
-
+                onLongPress={() => store.deleteTask(task.id)}
               />
             ))
           }

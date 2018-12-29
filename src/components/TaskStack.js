@@ -2,6 +2,7 @@ import React from "react";
 import { createAppContainer, createStackNavigator } from "react-navigation";
 import { Icon } from "react-native-elements";
 import TaskList from "./TaskList";
+import TaskView from "./TaskView";
 import TaskForm from "./TaskForm";
 
 const Stack = createStackNavigator({
@@ -18,10 +19,30 @@ const Stack = createStackNavigator({
       )
     })
   },
+  TaskView: {
+    screen: TaskView,
+    navigationOptions: ({ navigation }) => ({
+      headerTitle: navigation.state.params.task.title,
+      headerLeft: (
+        <Icon
+          name="chevron-left"
+          onPress={() => navigation.goBack()}
+          iconStyle={{marginLeft:10, fontSize:35}}
+        />
+      ),
+      headerRight: (
+        <Icon
+          name="edit"
+          onPress={() => navigation.navigate("TaskForm", {task: navigation.state.params.task})}
+          iconStyle={{marginRight:10}}
+        />
+      )
+    })
+  },
   TaskForm: {
     screen: TaskForm,
     navigationOptions: ({ navigation }) => ({
-      headerTitle: "New Task",
+      headerTitle: navigation.state.params ? navigation.state.params.task.title : "New Task",
       headerLeft: (
         <Icon
           name="chevron-left"

@@ -7,5 +7,15 @@ export const parseUpdateTaskParams = params => (
 );
 
 export const parseCreateTaskParams = params => (
-  `("${params.id}", "${params.title}", "${params.content}", "${params.parentId}", ${params.complete})`
+  `("${
+    params.id // string
+  }", "${
+    params.title // string
+  }", "${
+    params.content // string
+  }", "${
+    params.parentId // string
+  }", ${
+    params.complete // boolean (integer)
+  })`
 );

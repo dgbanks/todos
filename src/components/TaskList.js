@@ -14,7 +14,7 @@ class TaskList extends React.Component {
   }
 
   render() {
-    const { store } = this.props;
+    const { store, navigation } = this.props;
     if (store.fetching) {
       return (
         <View style={styles.loading}>
@@ -32,6 +32,7 @@ class TaskList extends React.Component {
                 title={task.title}
                 checked={task.complete}
                 onIconPress={() => store.updateTask(task.id, { complete: task.complete ? 0 : 1 })}
+                onPress={() => navigation.navigate("TaskView", { task })}
                 onLongPress={() => store.deleteTask(task.id)}
               />
             ))

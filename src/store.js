@@ -26,17 +26,17 @@ class Store {
         tx.executeSql(
           `CREATE TABLE IF NOT EXISTS Tasks ${taskSchema}`,
           [],
-          (_, res) => {}
-        );
-
-        tx.executeSql(
-          "SELECT * FROM Tasks",
-          [],
           (_, res) => {
-            this.data = res.rows.raw();
-            this.fetching = false;
+            _.executeSql(
+              "SELECT * FROM Tasks",
+              [],
+              (_, res) => {
+                this.data = res.rows.raw();
+                this.fetching = false;
+              }
+            )
           }
-        )
+        );
       });
     });
   }

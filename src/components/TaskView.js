@@ -8,9 +8,8 @@ import {
 class TaskView extends React.Component {
   constructor(props) {
     super(props);
-    debugger
   }
-  
+
   render() {
     return (
       <View>

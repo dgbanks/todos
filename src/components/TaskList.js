@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   StyleSheet
 } from "react-native";
+import TaskItem from "./TaskItem";
 
 class TaskList extends React.Component {
   constructor(props) {
@@ -28,13 +29,20 @@ class TaskList extends React.Component {
         <ScrollView>
           {
             store.tasks.map(task => (
-              <CheckBox
-                title={task.title}
-                checked={task.complete}
-                onIconPress={() => store.updateTask(task.id, { complete: task.complete ? 0 : 1 })}
-                onPress={() => navigation.navigate("TaskView", { task })}
-                onLongPress={() => store.deleteTask(task.id)}
+              <TaskItem
+                task={task}
+                details={false}
+                update={store.updateTask}
+                destroy={store.deleteTask}
+                navigate={navigation.navigate}
               />
+              // <CheckBox
+              //   title={task.title}
+              //   checked={task.complete}
+              //   onIconPress={() => store.updateTask(task.id, { complete: task.complete ? 0 : 1 })}
+              //   onPress={() => navigation.navigate("TaskView", { task })}
+              //   onLongPress={() => store.deleteTask(task.id)}
+              // />
             ))
           }
         </ScrollView>

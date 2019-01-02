@@ -50,27 +50,39 @@ export default class TaskItem extends React.Component {
     } = this.props;
 
     const { slid } = this.state;
+    const {
+      container,
+      buttonWrapper,
+      button,
+      icon,
+      checkboxWrapper,
+      checkbox,
+      checkedText,
+      uncheckedText
+    } = styles;
 
     return (
-      <View style={styles.container}>
+      <View style={container}>
         <Button
-          icon={{name:"delete", color:"red", style: styles.icon }}
+          icon={{name:"delete", color:"red", style: icon }}
           onPress={destroy}
-          buttonStyle={styles.button}
-          containerViewStyle={styles.buttonWrapper}
+          buttonStyle={button}
+          containerViewStyle={buttonWrapper}
         />
         <CheckBoxWrapper
           onDragEnd={(e,f) => this.handleSlide(f)}
           pose={slid ? "slid" : "initial"}
-          style={styles.checkboxWrapper}
+          style={checkboxWrapper}
         >
           <CheckBox
             title={task.title}
             checked={Boolean(task.complete)}
+            checkedIcon="check-square"
             onPress={() => slid ? this.setState({ slid: false }) : navigate("TaskView")}
             onIconPress={update}
             onLongPress={() => navigate("TaskForm")}
-            containerStyle={styles.checkbox}
+            containerStyle={checkbox}
+            textStyle={Boolean(task.complete) ? checkedText : uncheckedText}
           />
         </CheckBoxWrapper>
       </View>
@@ -96,9 +108,14 @@ const styles = StyleSheet.create({
     borderRadius:0,
     height:48,
   },
-  background: {
-    backgroundColor:"yellow",
-    height:"100%",
+  checkedText: {
+    marginLeft:13.5,
+    fontWeight:"500",
+    opacity:.5
+  },
+  uncheckedText: {
+    marginLeft:15,
+    fontWeight:"500"
   },
   buttonWrapper: {
     position:"absolute",

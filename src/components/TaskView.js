@@ -17,7 +17,7 @@ class TaskView extends React.Component {
     return (
       <View>
         {
-          task.content && (
+          Boolean(task.content) && (
             <View style={styles.attribute}>
               <Text style={styles.attrName}>Content</Text>
               <Text>{task.content}</Text>
@@ -33,7 +33,7 @@ export default inject("store")(observer(TaskView));
 
 const styles = StyleSheet.create({
   attribute: {
-    padding:10
+    padding:20
   },
   attrName: {
     fontWeight:"bold",

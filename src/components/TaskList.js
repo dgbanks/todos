@@ -28,13 +28,14 @@ class TaskList extends React.Component {
       <View>
         <ScrollView>
           {
-            store.tasks.map(task => (
+            store.tasks.map((task, index) => (
               <TaskItem
+                key={task.id}
                 task={task}
                 details={false}
-                update={store.updateTask}
-                destroy={store.deleteTask}
-                navigate={navigation.navigate}
+                update={() => store.updateTask(task.id, { complete: task.complete ? 0 : 1 })}
+                destroy={() => store.deleteTask(task.id)}
+                navigate={location => navigation.navigate(location, { task })}
               />
               // <CheckBox
               //   title={task.title}

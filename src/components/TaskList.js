@@ -37,13 +37,6 @@ class TaskList extends React.Component {
                 destroy={() => store.deleteTask(task.id)}
                 navigate={location => navigation.navigate(location, { task })}
               />
-              // <CheckBox
-              //   title={task.title}
-              //   checked={task.complete}
-              //   onIconPress={() => store.updateTask(task.id, { complete: task.complete ? 0 : 1 })}
-              //   onPress={() => navigation.navigate("TaskView", { task })}
-              //   onLongPress={() => store.deleteTask(task.id)}
-              // />
             ))
           }
         </ScrollView>

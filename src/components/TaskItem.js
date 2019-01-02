@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Animated, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { CheckBox, Button } from "react-native-elements";
 import posed from "react-native-pose";
 import { value } from "popmotion";
@@ -67,7 +67,7 @@ export default class TaskItem extends React.Component {
           <CheckBox
             title={task.title}
             checked={Boolean(task.complete)}
-            onPress={() => navigate("TaskView")}
+            onPress={() => slid ? this.setState({ slid: false }) : navigate("TaskView")}
             onIconPress={update}
             onLongPress={() => navigate("TaskForm")}
             containerStyle={styles.checkbox}

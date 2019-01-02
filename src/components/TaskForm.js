@@ -7,13 +7,24 @@ import uuid from "uuid";
 class TaskForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      id: uuid(),
-      title: "",
-      content: "",
-      parentId: null,
-      complete: 0
-    };
+    if (props.navigation.state.params) {
+      const {
+        id,
+        title,
+        content,
+        parentId,
+        complete
+      } = props.navigation.state.params.task;
+      this.state = { id, title, content, parentId, complete };
+    } else {
+      this.state = {
+        id: uuid(),
+        title: "",
+        content: "",
+        parentId: null,
+        complete: 0
+      };
+    }
     this.createTask = this.createTask.bind(this);
   }
 
@@ -29,6 +40,7 @@ class TaskForm extends React.Component {
           <FormLabel>Title</FormLabel>
           <FormInput
             placeholder="Title"
+            value={this.state.title}
             onChangeText={input => this.setState({ title: input })}
           />
 

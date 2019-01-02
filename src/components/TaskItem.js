@@ -1,8 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { CheckBox, Button } from "react-native-elements";
+import { CheckBox, Icon } from "react-native-elements";
 import posed from "react-native-pose";
-import { value } from "popmotion";
 
 const CheckBoxWrapper = posed(View)({
   label:"checkbox",
@@ -12,13 +11,9 @@ const CheckBoxWrapper = posed(View)({
   slid: { x: -50 },
 });
 
-const NewButton = posed(TouchableOpacity)({
-  passive: {
-    opacity: ["x", {
-      inputRange:[0, 1],
-      outputRange:[0, 1],
-    }, "checkbox"]
-  }
+const Button = posed(TouchableOpacity)({
+  show: { opacity: 1 },
+  hide: { opacity: 0 }
 });
 
 export default class TaskItem extends React.Component {
@@ -41,6 +36,8 @@ export default class TaskItem extends React.Component {
   }
 
   render() {
+    const { slid } = this.state;
+
     const {
       task,
       details,
@@ -49,12 +46,9 @@ export default class TaskItem extends React.Component {
       navigate
     } = this.props;
 
-    const { slid } = this.state;
     const {
       container,
-      buttonWrapper,
       button,
-      icon,
       checkboxWrapper,
       checkbox,
       checkedText,
@@ -63,12 +57,9 @@ export default class TaskItem extends React.Component {
 
     return (
       <View style={container}>
-        <Button
-          icon={{name:"delete", color:"red", style: icon }}
-          onPress={destroy}
-          buttonStyle={button}
-          containerViewStyle={buttonWrapper}
-        />
+        <Button onPress={destroy} pose={slid ? "show" : "hide"} style={button}>
+          <Icon name="delete" color="white" />
+        </Button>
         <CheckBoxWrapper
           onDragEnd={(e,f) => this.handleSlide(f)}
           pose={slid ? "slid" : "initial"}
@@ -117,22 +108,16 @@ const styles = StyleSheet.create({
     marginLeft:15,
     fontWeight:"500"
   },
-  buttonWrapper: {
+  button: {
+    backgroundColor:"red",
+    height:50,
+    width:50,
     position:"absolute",
     top:0,
     right:0,
     marginRight:0,
-    height:"100%",
-    width:50
-  },
-  button: {
-    backgroundColor:"transparent",
-    height:"100%",
-    width:50
-  },
-  icon: {
-    fontSize:20,
-    marginLeft:0,
-    marginRight:0,
+    flex:1,
+    justifyContent:"center",
+    alignItems:"center"
   }
 });

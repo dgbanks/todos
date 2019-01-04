@@ -7,9 +7,9 @@ import {
 } from "./utils/taskUtils";
 
 class Store {
+  database = {};
   fetching = true;
   data = [];
-  database = {};
 
   constructor(){
     this.getData();

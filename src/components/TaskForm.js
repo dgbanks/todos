@@ -25,11 +25,16 @@ class TaskForm extends React.Component {
         complete: 0
       };
     }
-    this.createTask = this.createTask.bind(this);
+    this.saveTask = this.saveTask.bind(this);
   }
 
-  createTask() {
-    this.props.store.createTask(this.state);
+  saveTask() {
+    if (this.props.navigation.state.params) {
+      this.props.store.updateTask(this.state.id, this.state);
+      //fix this method so
+    } else {
+      this.props.store.createTask(this.state);
+    }
     this.props.navigation.goBack();
   }
 
@@ -48,13 +53,14 @@ class TaskForm extends React.Component {
           <FormInput
             multiline
             placeholder="Content"
+            value={this.state.content}
             onChangeText={input => this.setState({ content: input })}
           />
 
           <Button
             title="Testing"
             color="#4a4a4a"
-            onPress={this.createTask}
+            onPress={this.saveTask}
             disabled={!this.state.title}
           />
 

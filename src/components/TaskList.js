@@ -1,6 +1,7 @@
 import React from "react";
 import { observer, inject } from "mobx-react";
 import { View, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
+import { NavigationEvents as Listen } from "react-navigation";
 import TaskItem from "./TaskItem";
 import moment from "moment";
 
@@ -9,6 +10,7 @@ class TaskList extends React.Component {
     super(props);
     this.state = { slidItem: false };
     this.update = this.update.bind(this);
+    this.destroy = this.destroy.bind(this);
     this.manageItemStates = this.manageItemStates.bind(this);
   }
 
@@ -19,12 +21,19 @@ class TaskList extends React.Component {
     });
   }
 
+  destroy(taskId) {
+    this.setState({ slidItem: false });
+    this.props.store.deleteTask(taskId);
+  }
+
   manageItemStates() {
     this.setState({ slidItem: !this.state.slidItem });
   }
 
   render() {
     const { store, navigation } = this.props;
+    const { slidItem } = this.state;
+
     if (store.fetching) {
       return (
         <View style={styles.loading}>
@@ -35,6 +44,7 @@ class TaskList extends React.Component {
 
     return (
       <View>
+        <Listen onWillBlur={() => this.setState({ slidItem: false })} />
         <ScrollView>
           {
             store.tasks.map((task, index) => (
@@ -43,9 +53,9 @@ class TaskList extends React.Component {
                 task={task}
                 hasdetails={Boolean(task.content)}
                 toggleComplete={() => this.update(task)}
-                destroy={() => {this.manageItemStates(); store.deleteTask(task.id);}}
+                destroy={() => this.destroy(task.id)}
                 navigate={location => navigation.navigate(location, { task })}
-                pingList={this.manageItemStates}
+                pingList={() => this.setState({ slidItem: !slidItem })}
                 slidItem={this.state.slidItem}
               />
             ))

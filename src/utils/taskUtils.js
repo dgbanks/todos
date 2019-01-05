@@ -14,10 +14,10 @@ export const parseCreateTaskParams = params => {
     params.title // string
   }", "${
     params.content // string
-  }", "${
-    params.parentId // string
   }", ${
+    params.parentId ? `"${params.parentId}"` : `${params.parentId}` // string
+  }, ${
     params.complete // boolean (integer)
-  })`
+  })`;
   return result;
 };

@@ -1,12 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  Button
-} from "react-native";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 
 class TaskView extends React.Component {
   constructor(props) {
@@ -14,9 +8,7 @@ class TaskView extends React.Component {
   }
 
   render() {
-    const { task, something } = this.props.navigation.state.params;
-    const { navigation } = this.props;
-
+    const { task } = this.props.navigation.state.params;
     return (
       <View>
         {

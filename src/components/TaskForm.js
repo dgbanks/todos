@@ -11,11 +11,9 @@ class TaskForm extends React.Component {
       const {
         id,
         title,
-        content,
-        parentId,
-        complete
+        content
       } = props.navigation.state.params.task;
-      this.state = { id, title, content, parentId, complete };
+      this.state = { id, title, content };
     } else {
       this.state = {
         id: uuid(),
@@ -29,9 +27,12 @@ class TaskForm extends React.Component {
   }
 
   saveTask() {
-    if (this.props.navigation.state.params) {
+    const { params } = this.props.navigation.state;
+    if (params) {
       this.props.store.updateTask(this.state.id, this.state);
-      this.props.navigation.state.params.updateTask(this.state);
+      if (params.updateTask) {
+        params.updateTask(this.state);
+      }
     } else {
       this.props.store.createTask(this.state);
     }

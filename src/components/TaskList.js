@@ -1,12 +1,6 @@
 import React from "react";
 import { observer, inject } from "mobx-react";
-import { CheckBox } from "react-native-elements";
-import {
-  View,
-  ScrollView,
-  ActivityIndicator,
-  StyleSheet
-} from "react-native";
+import { View, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
 import TaskItem from "./TaskItem";
 
 class TaskList extends React.Component {

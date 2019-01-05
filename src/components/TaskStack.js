@@ -35,7 +35,7 @@ const Stack = createStackNavigator({
           name="edit"
           onPress={() => navigation.navigate("TaskForm", {
             task: navigation.state.params.task,
-            updateTask: (updatedTask) => navigation.setParams({ task: updatedTask })
+            updateTask: updatedTask => navigation.setParams({ task: updatedTask })
           })}
           iconStyle={{marginRight:10}}
         />

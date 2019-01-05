@@ -55,16 +55,25 @@ const Stack = createStackNavigator({
   },
   TaskForm: {
     screen: TaskForm,
-    navigationOptions: ({ navigation }) => ({
-      headerTitle: navigation.state.params ? navigation.state.params.task.title : "New Task",
-      headerLeft: (
-        <Icon
-          name="chevron-left"
-          onPress={() => navigation.goBack()}
-          iconStyle={{marginLeft:10, fontSize:35}}
-        />
-      )
-    })
+    navigationOptions: ({ navigation }) => {
+      const { params } = navigation.state;
+      return {
+        headerTitle: (params && params.task) ? params.task.title : "New Task",
+        headerLeft: (
+          <Icon
+            name="chevron-left"
+            onPress={() => navigation.goBack()}
+            iconStyle={{marginLeft:10, fontSize:35}}
+          />
+        ),
+        headerRight: (
+          <Button
+            title="Save"
+            onPress={() => navigation.setParams({ save: true })}
+          />
+        )
+      }
+    }
   }
 });
 

@@ -27,9 +27,15 @@ class TaskForm extends React.Component {
     this.saveTask = this.saveTask.bind(this);
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.navigation.getParam("save", false)) {
+      this.saveTask();
+    }
+  }
+
   saveTask() {
     const { params } = this.props.navigation.state;
-    if (params) {
+    if (params && params.task) {
       this.props.store.updateTask(this.state.id, this.state);
       if (params.updateTask) {
         params.updateTask(this.state);
@@ -57,13 +63,6 @@ class TaskForm extends React.Component {
             placeholder="Content"
             value={this.state.content}
             onChangeText={input => this.setState({ content: input })}
-          />
-
-          <Button
-            title="Testing"
-            color="#4a4a4a"
-            onPress={this.saveTask}
-            disabled={!this.state.title}
           />
 
         </ScrollView>

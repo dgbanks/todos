@@ -70,6 +70,7 @@ const Stack = createStackNavigator({
           <Button
             title="Save"
             onPress={() => navigation.setParams({ save: true })}
+            style={{marginRight:20}}
           />
         )
       }

@@ -47,7 +47,7 @@ export default class TaskItem extends React.Component {
   render() {
     const { show } = this.state;
     const { task, toggleComplete, destroy, navigate } = this.props;
-    const { container, button, checkbox, details } = styles;
+    const { container, button, checkbox, text, details } = styles;
     return (
       <View style={container}>
         <Button onPress={destroy} pose={show ? "show" : "hide"} style={button}>
@@ -71,7 +71,8 @@ export default class TaskItem extends React.Component {
               onIconPress={() => this.onClick(toggleComplete)}
               onLongPress={() => navigate("TaskForm")}
               containerStyle={checkbox}
-              textStyle={{ marginLeft: task.complete ? 13.5 : 15 }}
+              wrapperStyle={{alignItems:"center", width:"100%"}}
+              textStyle={Object.assign({}, text, { marginLeft: task.complete ? 13.5 : 15 })}
             />
           </Wrapper>
         </Interactable.View>
@@ -107,7 +108,8 @@ const styles = StyleSheet.create({
     borderRadius:0,
     height:50,
     backgroundColor:"white",
-    position:"relative"
+    position:"relative",
+    alignItems:"center"
   },
   button: {
     backgroundColor:"red",
@@ -118,6 +120,17 @@ const styles = StyleSheet.create({
     right:0,
     justifyContent:"center",
     alignItems:"center"
+  },
+  text: {
+    fontWeight:"500",
+    height:"100%",
+    flex:1,
+    flexWrap:"wrap",
+    alignItems:"center",
+    justifyContent:"center",
+
+    marginTop:0,
+    marginBottom:0
   },
   details: {
     position:"absolute",

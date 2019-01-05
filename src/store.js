@@ -1,5 +1,6 @@
 import { decorate, observable, action, computed } from "mobx";
 import SQLite from "react-native-sqlite-storage";
+import moment from "moment";
 import {
   taskSchema,
   parseUpdateTaskParams,
@@ -13,9 +14,7 @@ class Store {
 
   constructor(){
     SQLite.openDatabase({ name: "database", location: "Library"}, db => {
-      // db.transaction(tx => {
-        //   tx.executeSql("DROP TABLE IF EXISTS Tasks")
-        // });
+      // db.transaction(tx => tx.executeSql("DROP TABLE IF EXISTS Tasks"));
       this.database = db;
       db.transaction(tx => {
         tx.executeSql(
@@ -26,8 +25,22 @@ class Store {
               "SELECT * FROM Tasks",
               [],
               (_, res) => {
-                this.data = res.rows.raw();
+                const today = moment().startOf("day");
+                this.data = res.rows.raw().filter(t => (
+                  !t.complete || (t.complete && t.completedAt > today)
+                ));
                 this.fetching = false;
+                // delete day old completed tasks
+                res.rows.raw().filter(t => (
+                  t.completedAt && t.completedAt < today
+                )).each(t => {
+                  _.executeSql(
+                    "DELETE FROM Tasks WHERE id = ?",
+                    [t.id],
+                    (_, res) => {},
+                    (_, err) => {debugger}
+                  )
+                })
               }
             )
           }

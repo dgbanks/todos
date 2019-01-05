@@ -13,7 +13,7 @@ class TaskList extends React.Component {
   update(task) {
     this.props.store.updateTask(task.id, {
       complete: task.complete ? 0 : 1,
-      completedAt: task.complete ? moment().valueOf() : null
+      completedAt: !task.complete ? moment().valueOf() : null
     });
   }
 

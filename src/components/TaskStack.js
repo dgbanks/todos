@@ -12,12 +12,13 @@ const Stack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       headerTitle: "Tasks",
       headerLeft: (
-        <Button
-          title={navigation.getParam("hide", false) ? "Show Complete" : "Hide Complete"}
+        <Icon
+          name="filter-list"
           onPress={() => navigation.setParams({
             hide: !navigation.getParam("hide", false)
           })}
-          style={{height:10}}
+          iconStyle={{ marginLeft:20, fontWeight:"bold" }}
+          color={navigation.getParam("hide", false) ? "deepskyblue" : "#a4a4a4"}
         />
       ),
       headerRight: (

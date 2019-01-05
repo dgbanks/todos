@@ -1,7 +1,7 @@
 import React from "react";
 import { observer, inject } from "mobx-react";
 import { View, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
-import TaskItem from "./TaskItem";
+import TaskItem from "./TaskItem2";
 import moment from "moment";
 
 class TaskList extends React.Component {
@@ -36,7 +36,7 @@ class TaskList extends React.Component {
                 key={task.id}
                 task={task}
                 hasdetails={Boolean(task.content)}
-                update={() => this.update(task)}
+                toggleComplete={() => this.update(task)}
                 destroy={() => store.deleteTask(task.id)}
                 navigate={location => navigation.navigate(location, { task })}
               />

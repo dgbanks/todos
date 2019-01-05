@@ -43,7 +43,7 @@ class TaskList extends React.Component {
                 task={task}
                 hasdetails={Boolean(task.content)}
                 toggleComplete={() => this.update(task)}
-                destroy={() => store.deleteTask(task.id)}
+                destroy={() => {this.manageItemStates(); store.deleteTask(task.id);}}
                 navigate={location => navigation.navigate(location, { task })}
                 pingList={this.manageItemStates}
                 slidItem={this.state.slidItem}

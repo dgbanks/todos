@@ -1,6 +1,7 @@
 import React from "react";
 import { observer, inject } from "mobx-react";
-import { View, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
+import { View, ScrollView, ActivityIndicator, StyleSheet, Button } from "react-native";
+import { Icon } from "react-native-elements";
 import { NavigationEvents as Listen } from "react-navigation";
 import TaskItem from "./TaskItem";
 import moment from "moment";
@@ -11,6 +12,14 @@ class TaskList extends React.Component {
     this.state = { slidItem: false };
     this.update = this.update.bind(this);
     this.destroy = this.destroy.bind(this);
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.navigation.state.params.hide) {
+      this.props.store.filter = true
+    } else {
+      this.props.store.filter = false
+    }
   }
 
   update(task) {

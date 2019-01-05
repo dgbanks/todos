@@ -10,6 +10,7 @@ import {
 class Store {
   database = {};
   fetching = true;
+  filter = false;
   data = [];
 
   constructor(){
@@ -39,10 +40,10 @@ class Store {
                     [t.id],
                     (_, res) => {},
                     (_, err) => {debugger}
-                  )
-                })
+                  );
+                });
               }
-            )
+            );
           }
         );
       });
@@ -50,7 +51,9 @@ class Store {
   }
 
   get tasks() {
-    return this.data.slice().sort((a,b) => a.title < b.title ? -1 : 1);
+    return this.data.slice()
+    .filter(t => !(this.filter && t.complete))
+    .sort((a,b) => a.title < b.title ? -1 : 1);
   }
 
   createTask(params) {
@@ -111,10 +114,11 @@ class Store {
 }
 
 decorate(Store, {
+  database: observable,
   fetching: observable,
   data: observable,
+  filter: observable,
   tasks: computed,
-  database: observable,
   createTask: action,
   updateTask: action,
   deleteTask: action,

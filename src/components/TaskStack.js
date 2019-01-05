@@ -1,5 +1,6 @@
 import React from "react";
 import { createAppContainer, createStackNavigator } from "react-navigation";
+import { Button } from "react-native";
 import { Icon } from "react-native-elements";
 import TaskList from "./TaskList";
 import TaskView from "./TaskView";
@@ -10,6 +11,15 @@ const Stack = createStackNavigator({
     screen: TaskList,
     navigationOptions: ({ navigation }) => ({
       headerTitle: "Tasks",
+      headerLeft: (
+        <Button
+          title={navigation.getParam("hide", false) ? "Show Complete" : "Hide Complete"}
+          onPress={() => navigation.setParams({
+            hide: !navigation.getParam("hide", false)
+          })}
+          style={{height:10}}
+        />
+      ),
       headerRight: (
         <Icon
           name="add"

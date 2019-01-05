@@ -35,7 +35,7 @@ class TaskList extends React.Component {
               <TaskItem
                 key={task.id}
                 task={task}
-                details={false}
+                hasdetails={Boolean(task.content)}
                 update={() => this.update(task)}
                 destroy={() => store.deleteTask(task.id)}
                 navigate={location => navigation.navigate(location, { task })}

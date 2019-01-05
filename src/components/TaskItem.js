@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { CheckBox, Icon } from "react-native-elements";
 import Interactable from "react-native-interactable";
 import posed from "react-native-pose";
@@ -33,19 +33,21 @@ export default class TaskItem extends React.Component {
   render() {
     const {
       task,
-      details,
+      hasdetails,
       update,
       destroy,
       navigate
     } = this.props;
     const {
       container,
+      containerWithDetails,
       button,
       checkboxWrapper,
+      checkedCheckboxWrapper,
       checkbox,
       checkedText,
       uncheckedText,
-      detailsContainer
+      details
     } = styles;
 
     return (
@@ -61,7 +63,7 @@ export default class TaskItem extends React.Component {
           snapPoints={[{ x: 0, id: "closed" }, { x: -50, id: "open" }]}
           onDrag={this.snap}
           boundaries={{ right:0 }}
-          style={checkboxWrapper}
+          style={Boolean(task.complete) ? checkedCheckboxWrapper : checkboxWrapper}
         >
           <CheckBox
             title={task.title}
@@ -99,18 +101,27 @@ const styles = StyleSheet.create({
     height:50,
     backgroundColor:"white"
   },
+  checkedCheckboxWrapper: {
+    position:"absolute",
+    width:"100%",
+    height:50,
+    backgroundColor:"white",
+    opacity:.5
+  },
   checkbox: {
     width:"100%",
     marginLeft:0,
     marginTop:0,
+    marginBottom:0,
     borderRadius:0,
     height:50,
     backgroundColor:"white",
+    position:"relative"
   },
   checkedText: {
     marginLeft:13.5,
     fontWeight:"500",
-    opacity:.5
+    // opacity:.5
   },
   uncheckedText: {
     marginLeft:15,
@@ -126,8 +137,10 @@ const styles = StyleSheet.create({
     justifyContent:"center",
     alignItems:"center"
   },
-  detailsContainer: {
-    backgroundColor:"lightblue",
-    height:25
+  details: {
+    position:"absolute",
+    width:"100%",
+    bottom:0,
+    zIndex:10
   }
 });

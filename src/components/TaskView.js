@@ -4,7 +4,8 @@ import {
   View,
   Text,
   ScrollView,
-  StyleSheet
+  StyleSheet,
+  Button
 } from "react-native";
 
 class TaskView extends React.Component {
@@ -13,7 +14,9 @@ class TaskView extends React.Component {
   }
 
   render() {
-    const { task } = this.props.navigation.state.params;
+    const { task, something } = this.props.navigation.state.params;
+    const { navigation } = this.props;
+
     return (
       <View>
         {

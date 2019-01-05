@@ -4,7 +4,6 @@ export const parseUpdateTaskParams = params => {
   const result = Object.entries(params).map(entry => (
     `${entry[0]} = ${entry[0] === "complete" ? `${entry[1]}` : `"${entry[1]}"`}`
   )).join(", ");
-  debugger;
   return result;
 };
 
@@ -20,6 +19,5 @@ export const parseCreateTaskParams = params => {
   }", ${
     params.complete // boolean (integer)
   })`
-  debugger;
   return result;
 };

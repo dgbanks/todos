@@ -1,6 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { View, ScrollView, Text, Button as RNButton } from "react-native";
+import { View, ScrollView } from "react-native";
 import { FormLabel, FormInput, Button } from "react-native-elements";
 import uuid from "uuid";
 
@@ -31,7 +31,7 @@ class TaskForm extends React.Component {
   saveTask() {
     if (this.props.navigation.state.params) {
       this.props.store.updateTask(this.state.id, this.state);
-      //fix this method so
+      this.props.navigation.state.params.updateTask(this.state);
     } else {
       this.props.store.createTask(this.state);
     }

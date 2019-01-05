@@ -33,7 +33,10 @@ const Stack = createStackNavigator({
       headerRight: (
         <Icon
           name="edit"
-          onPress={() => navigation.navigate("TaskForm", { task: navigation.state.params.task })}
+          onPress={() => navigation.navigate("TaskForm", {
+            task: navigation.state.params.task,
+            updateTask: (updatedTask) => navigation.setParams({ task: updatedTask })
+          })}
           iconStyle={{marginRight:10}}
         />
       )

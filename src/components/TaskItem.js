@@ -6,6 +6,8 @@ import posed from "react-native-pose";
 const CheckBoxWrapper = posed(View)({
   label:"checkbox",
   draggable:"x",
+  // dragging: { x: props => {debugger} },
+  // dragBounds:{ left:0 },
   dragEnd: { x: 0, y: 0 },
   initial: { x: 0 },
   slid: { x: -50 },
@@ -98,6 +100,7 @@ const styles = StyleSheet.create({
     marginLeft:"0%",
     borderRadius:0,
     height:48,
+    backgroundColor:"white"
   },
   checkedText: {
     marginLeft:13.5,

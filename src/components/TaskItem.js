@@ -1,45 +1,38 @@
 import React from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { CheckBox, Icon } from "react-native-elements";
+import Interactable from "react-native-interactable";
 import posed from "react-native-pose";
-
-const CheckBoxWrapper = posed(View)({
-  label:"checkbox",
-  draggable:"x",
-  // dragging: { x: props => {debugger} },
-  // dragBounds:{ left:0 },
-  dragEnd: { x: 0, y: 0 },
-  initial: { x: 0 },
-  slid: { x: -50 },
-});
-
-const Button = posed(TouchableOpacity)({
-  show: { opacity: 1 },
-  hide: { opacity: 0 }
-});
 
 export default class TaskItem extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { slid: false };
-    this.handleSlide = this.handleSlide.bind(this);
+    this.state = { show: false };
+    this.snap = this.snap.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
-  handleSlide(node) {
-    if (this.state.slid) {
-      this.setState({ slid: false });
+  snap({ nativeEvent }) {
+    if (nativeEvent.state === "start" && nativeEvent.x === 0) {
+      this.setState({ show: true });
     } else {
-      if (node.dx < - 75) {
-        this.setState({ slid: true });
-      } else {
-        this.setState({ slid: false });
+      if (nativeEvent.state !== "end") {
+        this.setState({ show: false });
       }
     }
   }
 
-  render() {
-    const { slid } = this.state;
+  onClick() {
+    if (this.state.show) {
+      this.checkboxWrapper.snapTo({ index: 0 });
+      this.setState({ show: false });
+    } else {
+      this.props.navigate("TaskView");
+    }
+  }
 
+  render() {
+    const { show } = this.state;
     const {
       task,
       details,
@@ -47,7 +40,6 @@ export default class TaskItem extends React.Component {
       destroy,
       navigate
     } = this.props;
-
     const {
       container,
       button,
@@ -59,29 +51,37 @@ export default class TaskItem extends React.Component {
 
     return (
       <View style={container}>
-        <Button onPress={destroy} pose={slid ? "show" : "hide"} style={button}>
+        <Button onPress={destroy} pose={show ? "show" : "hide"} style={button}>
           <Icon name="delete" color="white" />
         </Button>
-        <CheckBoxWrapper
-          onDragEnd={(e,f) => this.handleSlide(f)}
-          pose={slid ? "slid" : "initial"}
-          style={checkboxWrapper}
+        <Interactable.View
+          ref={node => this.checkboxWrapper = node}
+          horizontalOnly={true}
+          snapPoints={[{ x: 0, id: "closed" }, { x: -50, id: "open" }]}
+          onDrag={this.snap}
+          boundaries={{ right:0 }}
+          style={{ width: "100%", backgroundColor: "white" }}
         >
           <CheckBox
             title={task.title}
             checked={Boolean(task.complete)}
             checkedIcon="check-square"
-            onPress={() => slid ? this.setState({ slid: false }) : navigate("TaskView")}
+            onPress={this.onClick}
             onIconPress={update}
             onLongPress={() => navigate("TaskForm")}
             containerStyle={checkbox}
             textStyle={Boolean(task.complete) ? checkedText : uncheckedText}
           />
-        </CheckBoxWrapper>
+        </Interactable.View>
       </View>
     );
   }
 }
+
+const Button = posed(TouchableOpacity)({
+  show: { opacity: 1 },
+  hide: { opacity: 0 }
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     marginLeft:"0%",
     borderRadius:0,
     height:48,
-    backgroundColor:"white"
+    backgroundColor:"white",
   },
   checkedText: {
     marginLeft:13.5,

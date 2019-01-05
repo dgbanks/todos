@@ -1,7 +1,7 @@
 import React from "react";
 import { observer, inject } from "mobx-react";
 import { View, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
-import TaskItem from "./TaskItem";
+import TaskItem from "./TaskItem2";
 
 class TaskList extends React.Component {
   constructor(props) {

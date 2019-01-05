@@ -9,6 +9,7 @@ export default class TaskItem extends React.Component {
     super(props);
     this.state = { show: false };
     this.snap = this.snap.bind(this);
+    this.test = this.test.bind(this);
     this.onClick = this.onClick.bind(this);
   }
 
@@ -29,62 +30,56 @@ export default class TaskItem extends React.Component {
       this.props.navigate("TaskView");
     }
   }
+  test() {
+    debugger
+  }
 
   render() {
-    const {
-      task,
-      hasdetails,
-      update,
-      destroy,
-      navigate
-    } = this.props;
-    const {
-      container,
-      containerWithDetails,
-      button,
-      checkboxWrapper,
-      checkedCheckboxWrapper,
-      checkbox,
-      checkedText,
-      uncheckedText,
-      details
-    } = styles;
-
+    const { show } = this.state;
+    const { task, toggleComplete, destroy, navigate } = this.props;
+    const { container, button, checkbox, details } = styles;
+    console.log(this.checkboxWrapper);
     return (
       <View style={container}>
-        <Button
-          onPress={destroy}
-          pose={this.state.show ? "show" : "hide"}
-          style={button}
-        ><Icon name="delete" color="white" /></Button>
+        <Button onPress={destroy} pose={show ? "show" : "hide"} style={button}>
+          <Icon name="delete" color="white" />
+        </Button>
         <Interactable.View
           ref={node => this.checkboxWrapper = node}
           horizontalOnly={true}
           snapPoints={[{ x: 0, id: "closed" }, { x: -50, id: "open" }]}
           onDrag={this.snap}
           boundaries={{ right:0 }}
-          style={Boolean(task.complete) ? checkedCheckboxWrapper : checkboxWrapper}
+          style={{ width:"100%", backgroundColor:"white" }}
         >
-          <CheckBox
-            title={task.title}
-            checked={Boolean(task.complete)}
-            checkedIcon="check-square"
-            checkedColor="lightblue"
-            onPress={this.onClick}
-            onIconPress={update}
-            onLongPress={() => navigate("TaskForm")}
-            containerStyle={checkbox}
-            textStyle={Boolean(task.complete) ? checkedText : uncheckedText}
-          />
+          <Wrapper pose={task.complete ? "checked" : "unchecked"}>
+            <CheckBox
+              title={task.title}
+              checked={Boolean(task.complete)}
+              checkedIcon="check-square"
+              checkedColor="lightblue"
+              onPress={this.onClick}
+              onIconPress={toggleComplete}
+              onLongPress={() => navigate("TaskForm")}
+              containerStyle={checkbox}
+              textStyle={{ marginLeft: task.complete ? 13.5 : 15 }}
+            />
+          </Wrapper>
         </Interactable.View>
       </View>
     );
   }
 }
 
+
 const Button = posed(TouchableOpacity)({
   show: { opacity: 1 },
   hide: { opacity: 0 }
+});
+
+const Wrapper = posed(View)({
+  checked: { opacity: .5 },
+  unchecked: { opacity: 1 }
 });
 
 const styles = StyleSheet.create({
@@ -95,19 +90,6 @@ const styles = StyleSheet.create({
     marginTop:0,
     marginBottom:0,
   },
-  checkboxWrapper: {
-    position:"absolute",
-    width:"100%",
-    height:50,
-    backgroundColor:"white"
-  },
-  checkedCheckboxWrapper: {
-    position:"absolute",
-    width:"100%",
-    height:50,
-    backgroundColor:"white",
-    opacity:.5
-  },
   checkbox: {
     width:"100%",
     marginLeft:0,
@@ -117,15 +99,6 @@ const styles = StyleSheet.create({
     height:50,
     backgroundColor:"white",
     position:"relative"
-  },
-  checkedText: {
-    marginLeft:13.5,
-    fontWeight:"500",
-    // opacity:.5
-  },
-  uncheckedText: {
-    marginLeft:15,
-    fontWeight:"500"
   },
   button: {
     backgroundColor:"red",

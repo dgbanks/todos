@@ -7,7 +7,9 @@ import moment from "moment";
 class TaskList extends React.Component {
   constructor(props) {
     super(props);
+    this.state = { slidItem: false };
     this.update = this.update.bind(this);
+    this.manageItemStates = this.manageItemStates.bind(this);
   }
 
   update(task) {
@@ -15,6 +17,10 @@ class TaskList extends React.Component {
       complete: task.complete ? 0 : 1,
       completedAt: !task.complete ? moment().valueOf() : null
     });
+  }
+
+  manageItemStates() {
+    this.setState({ slidItem: !this.state.slidItem });
   }
 
   render() {
@@ -39,6 +45,8 @@ class TaskList extends React.Component {
                 toggleComplete={() => this.update(task)}
                 destroy={() => store.deleteTask(task.id)}
                 navigate={location => navigation.navigate(location, { task })}
+                pingList={this.manageItemStates}
+                slidItem={this.state.slidItem}
               />
             ))
           }

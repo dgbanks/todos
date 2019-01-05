@@ -9,43 +9,48 @@ export default class TaskItem extends React.Component {
     super(props);
     this.state = { show: false };
     this.snap = this.snap.bind(this);
-    this.test = this.test.bind(this);
     this.onClick = this.onClick.bind(this);
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (!newProps.slidItem && this.state.show) {
+      this.checkboxWrapper.snapTo({ index: 0 });
+      this.setState({ show: false });
+    }
   }
 
   snap({ nativeEvent }) {
     if (nativeEvent.state === "start" && nativeEvent.x === 0) {
       this.setState({ show: true });
+      this.props.pingList();
     }
     if (nativeEvent.state === "end" && nativeEvent.x === 0) {
       this.setState({ show: false });
+      this.props.pingList();
     }
   }
 
   onClick() {
-    if (this.state.show) {
+    if (this.props.slidItem) {
       this.checkboxWrapper.snapTo({ index: 0 });
       this.setState({ show: false });
+      this.props.pingList();
     } else {
       this.props.navigate("TaskView");
     }
-  }
-  test() {
-    debugger
   }
 
   render() {
     const { show } = this.state;
     const { task, toggleComplete, destroy, navigate } = this.props;
     const { container, button, checkbox, details } = styles;
-    console.log(this.checkboxWrapper);
     return (
       <View style={container}>
         <Button onPress={destroy} pose={show ? "show" : "hide"} style={button}>
           <Icon name="delete" color="white" />
         </Button>
         <Interactable.View
-          ref={node => this.checkboxWrapper = node}
+          ref={node => {this.checkboxWrapper = node}}
           horizontalOnly={true}
           snapPoints={[{ x: 0, id: "closed" }, { x: -50, id: "open" }]}
           onDrag={this.snap}

@@ -9,13 +9,13 @@ export default class TaskItem extends React.Component {
     super(props);
     this.state = { show: false };
     this.snap = this.snap.bind(this);
+    this.forceUnsnap = this.forceUnsnap.bind(this);
     this.onClick = this.onClick.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
     if (!newProps.slidItem && this.state.show) {
-      this.checkboxWrapper.snapTo({ index: 0 });
-      this.setState({ show: false });
+      this.forceUnsnap();
     }
   }
 
@@ -30,17 +30,17 @@ export default class TaskItem extends React.Component {
     }
   }
 
+  forceUnsnap() {
+    this.checkboxWrapper.snapTo({ index: 0 });
+    this.setState({ show: false });
+  }
+
   onClick(action) {
     if (this.props.slidItem) {
-      this.checkboxWrapper.snapTo({ index: 0 });
-      this.setState({ show: false });
+      this.forceUnsnap();
       this.props.pingList();
-    } else {
-      if (action === "navigate") {
-        this.props.navigate("TaskView");
-      } else {
-        this.props.toggleComplete();
-      }
+    } else { // navigate("TaskView"); toggleComplete() takes nothing
+      action("TaskView");
     }
   }
 
@@ -67,8 +67,8 @@ export default class TaskItem extends React.Component {
               checked={Boolean(task.complete)}
               checkedIcon="check-square"
               checkedColor="lightblue"
-              onPress={() => this.onClick("navigate")}
-              onIconPress={() => this.onClick("update")}
+              onPress={() => this.onClick(navigate)}
+              onIconPress={() => this.onClick(toggleComplete)}
               onLongPress={() => navigate("TaskForm")}
               containerStyle={checkbox}
               textStyle={{ marginLeft: task.complete ? 13.5 : 15 }}

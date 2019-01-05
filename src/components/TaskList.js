@@ -11,7 +11,6 @@ class TaskList extends React.Component {
     this.state = { slidItem: false };
     this.update = this.update.bind(this);
     this.destroy = this.destroy.bind(this);
-    this.manageItemStates = this.manageItemStates.bind(this);
   }
 
   update(task) {
@@ -24,10 +23,6 @@ class TaskList extends React.Component {
   destroy(taskId) {
     this.setState({ slidItem: false });
     this.props.store.deleteTask(taskId);
-  }
-
-  manageItemStates() {
-    this.setState({ slidItem: !this.state.slidItem });
   }
 
   render() {

@@ -22,6 +22,9 @@ class Store {
   getData() {
     SQLite.openDatabase({ name: "database", location: "Library"}, db => {
       this.database = db;
+      // db.transaction(tx => {
+      //   tx.executeSql("DROP TABLE IF EXISTS Tasks")
+      // });
       db.transaction(tx => {
         tx.executeSql(
           `CREATE TABLE IF NOT EXISTS Tasks ${taskSchema}`,

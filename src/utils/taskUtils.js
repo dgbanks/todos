@@ -1,8 +1,20 @@
-export const taskSchema = "(id, title, content, parentId, complete)";
+export const taskSchema = `(${[
+  "id",
+  "title",
+  "content",
+  "parentId",
+  "complete",
+  "completedAt",
+].join(", ")})`;
 
 export const parseUpdateTaskParams = params => {
   const result = Object.entries(params).map(entry => (
-    `${entry[0]} = ${entry[0] === "complete" ? `${entry[1]}` : `"${entry[1]}"`}`
+    `${entry[0]} = ${
+      [
+        "complete",
+        "completedAt"
+      ].includes(entry[0]) ? `${entry[1]}` : `"${entry[1]}"`
+    }`
   )).join(", ");
   return result;
 };
@@ -18,6 +30,8 @@ export const parseCreateTaskParams = params => {
     params.parentId ? `"${params.parentId}"` : `${params.parentId}` // string
   }, ${
     params.complete // boolean (integer)
+  }, ${
+    params.completedAt // utc datetime (integer)
   })`;
   return result;
 };

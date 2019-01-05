@@ -20,7 +20,8 @@ class TaskForm extends React.Component {
         title: "",
         content: "",
         parentId: null,
-        complete: 0
+        complete: 0,
+        completedAt: null
       };
     }
     this.saveTask = this.saveTask.bind(this);

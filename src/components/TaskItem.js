@@ -15,10 +15,9 @@ export default class TaskItem extends React.Component {
   snap({ nativeEvent }) {
     if (nativeEvent.state === "start" && nativeEvent.x === 0) {
       this.setState({ show: true });
-    } else {
-      if (nativeEvent.state !== "end") {
-        this.setState({ show: false });
-      }
+    }
+    if (nativeEvent.state === "end" && nativeEvent.x === 0) {
+      this.setState({ show: false });
     }
   }
 
@@ -32,7 +31,6 @@ export default class TaskItem extends React.Component {
   }
 
   render() {
-    const { show } = this.state;
     const {
       task,
       details,
@@ -46,26 +44,30 @@ export default class TaskItem extends React.Component {
       checkboxWrapper,
       checkbox,
       checkedText,
-      uncheckedText
+      uncheckedText,
+      detailsContainer
     } = styles;
 
     return (
       <View style={container}>
-        <Button onPress={destroy} pose={show ? "show" : "hide"} style={button}>
-          <Icon name="delete" color="white" />
-        </Button>
+        <Button
+          onPress={destroy}
+          pose={this.state.show ? "show" : "hide"}
+          style={button}
+        ><Icon name="delete" color="white" /></Button>
         <Interactable.View
           ref={node => this.checkboxWrapper = node}
           horizontalOnly={true}
           snapPoints={[{ x: 0, id: "closed" }, { x: -50, id: "open" }]}
           onDrag={this.snap}
           boundaries={{ right:0 }}
-          style={{ width: "100%", backgroundColor: "white" }}
+          style={checkboxWrapper}
         >
           <CheckBox
             title={task.title}
             checked={Boolean(task.complete)}
             checkedIcon="check-square"
+            checkedColor="lightblue"
             onPress={this.onClick}
             onIconPress={update}
             onLongPress={() => navigate("TaskForm")}
@@ -86,20 +88,23 @@ const Button = posed(TouchableOpacity)({
 const styles = StyleSheet.create({
   container: {
     position:"relative",
-    height:48,
-    display:"flex",
     alignItems:"center",
-    justifyContent:"center",
+    height:50,
+    marginTop:0,
+    marginBottom:0,
   },
   checkboxWrapper: {
     position:"absolute",
     width:"100%",
+    height:50,
+    backgroundColor:"white"
   },
   checkbox: {
     width:"100%",
-    marginLeft:"0%",
+    marginLeft:0,
+    marginTop:0,
     borderRadius:0,
-    height:48,
+    height:50,
     backgroundColor:"white",
   },
   checkedText: {
@@ -118,9 +123,11 @@ const styles = StyleSheet.create({
     position:"absolute",
     top:0,
     right:0,
-    marginRight:0,
-    flex:1,
     justifyContent:"center",
     alignItems:"center"
+  },
+  detailsContainer: {
+    backgroundColor:"lightblue",
+    height:25
   }
 });

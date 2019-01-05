@@ -12,19 +12,11 @@ class Store {
   data = [];
 
   constructor(){
-    this.getData();
-  }
-
-  get tasks() {
-    return this.data.slice().sort((a,b) => a.title < b.title ? -1 : 1);
-  }
-
-  getData() {
     SQLite.openDatabase({ name: "database", location: "Library"}, db => {
-      this.database = db;
       // db.transaction(tx => {
-      //   tx.executeSql("DROP TABLE IF EXISTS Tasks")
-      // });
+        //   tx.executeSql("DROP TABLE IF EXISTS Tasks")
+        // });
+      this.database = db;
       db.transaction(tx => {
         tx.executeSql(
           `CREATE TABLE IF NOT EXISTS Tasks ${taskSchema}`,
@@ -42,6 +34,10 @@ class Store {
         );
       });
     });
+  }
+
+  get tasks() {
+    return this.data.slice().sort((a,b) => a.title < b.title ? -1 : 1);
   }
 
   createTask(params) {
@@ -99,7 +95,6 @@ class Store {
       )
     })
   }
-
 }
 
 decorate(Store, {
@@ -107,7 +102,6 @@ decorate(Store, {
   data: observable,
   tasks: computed,
   database: observable,
-  getData: action,
   createTask: action,
   updateTask: action,
   deleteTask: action,

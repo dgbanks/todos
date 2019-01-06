@@ -42,9 +42,11 @@ class Store {
                     (_, err) => {debugger}
                   );
                 });
-              }
+              },
+              (_, err) => {debugger}
             );
-          }
+          },
+          (_, err) => {debugger}
         );
       });
     });
@@ -68,13 +70,10 @@ class Store {
             (_, res) => {
               this.data = this.data.concat(res.rows.raw());
             },
-            (_, err) => {
-            }
+            (_, err) => {debugger}
           )
         },
-        (_, err) => {
-          debugger
-        }
+        (_, err) => {debugger}
       )
     })
   }
@@ -90,12 +89,11 @@ class Store {
             [taskId],
             (_, res) => {
               this.data = this.data.filter(t => t.id !== taskId).concat(res.rows.raw());
-            }
+            },
+            (_, err) => {debugger}
           );
         },
-        (_, err) => {
-          debugger
-        }
+        (_, err) => {debugger}
       )
     })
   }
@@ -107,7 +105,8 @@ class Store {
         [taskId],
         (_, res) => {
           this.data = this.data.filter(d => d.id !== taskId);
-        }
+        },
+        (_, err) => {debugger}
       )
     })
   }

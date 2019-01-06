@@ -5,6 +5,7 @@ export const taskSchema = `(${[
   "parentId",
   "complete",
   "completedAt",
+  "dueDate"
 ].join(", ")})`;
 
 export const parseUpdateTaskParams = params => {
@@ -12,7 +13,8 @@ export const parseUpdateTaskParams = params => {
     `${entry[0]} = ${
       [
         "complete",
-        "completedAt"
+        "completedAt",
+        "dueDate"
       ].includes(entry[0]) ? `${entry[1]}` : `"${entry[1]}"`
     }`
   )).join(", ");
@@ -27,11 +29,13 @@ export const parseCreateTaskParams = params => {
   }", "${
     params.content // string
   }", ${
-    params.parentId ? `"${params.parentId}"` : `${params.parentId}` // string
+    params.parentId ? `"${params.parentId}"` : `${params.parentId}` // string or null
   }, ${
     params.complete // boolean (integer)
   }, ${
     params.completedAt // utc datetime (integer)
+  }, ${
+    params.dueDate && params.dueDate.valueOf() // utc datetime (integer)
   })`;
   return result;
 };

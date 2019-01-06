@@ -18,7 +18,7 @@ const Stack = createStackNavigator({
             hide: !navigation.getParam("hide", false)
           })}
           iconStyle={{ marginLeft:20, fontWeight:"bold" }}
-          color={navigation.getParam("hide", false) ? "deepskyblue" : "#a4a4a4"}
+          color={navigation.getParam("hide", false) ? "dodgerblue" : "#a4a4a4"}
         />
       ),
       headerRight: (

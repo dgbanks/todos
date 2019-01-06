@@ -19,12 +19,12 @@ export default class TaskItem extends React.Component {
     }
   }
 
-  snap({ nativeEvent }) {
-    if (nativeEvent.state === "start" && nativeEvent.x === 0) {
+  snap({ nativeEvent: { state, x, targetSnapPointId } }) {
+    if (state === "start" && x === 0) {
       this.setState({ show: true });
       this.props.pingList();
     }
-    if (nativeEvent.state === "end" && nativeEvent.x === 0) {
+    if (state === "end" && targetSnapPointId === "closed") {
       this.setState({ show: false });
       this.props.pingList();
     }

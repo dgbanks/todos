@@ -47,7 +47,7 @@ export default class TaskItem extends React.Component {
   render() {
     const { show } = this.state;
     const { task, toggleComplete, destroy, navigate } = this.props;
-    const { container, button, checkbox, text, details } = styles;
+    const { container, button, checkbox, text, wrapper, details } = styles;
     return (
       <View style={container}>
         <Button onPress={destroy} pose={show ? "show" : "hide"} style={button}>
@@ -61,7 +61,7 @@ export default class TaskItem extends React.Component {
           boundaries={{ right:0 }}
           style={{ width:"100%", backgroundColor:"white" }}
         >
-          <Wrapper pose={task.complete ? "checked" : "unchecked"}>
+          <Wrapper style={wrapper} pose={task.complete ? "checked" : "unchecked"}>
             <CheckBox
               title={task.title}
               checked={Boolean(task.complete)}
@@ -74,6 +74,11 @@ export default class TaskItem extends React.Component {
               wrapperStyle={{alignItems:"center", width:"100%"}}
               textStyle={Object.assign({}, text, { marginLeft: task.complete ? 13.5 : 15 })}
             />
+            {
+              task.dueDate && (
+                <Text style={details}>dueDate</Text>
+              )
+            }
           </Wrapper>
         </Interactable.View>
       </View>
@@ -123,19 +128,16 @@ const styles = StyleSheet.create({
   },
   text: {
     fontWeight:"500",
-    height:"100%",
     flex:1,
-    flexWrap:"wrap",
-    alignItems:"center",
-    justifyContent:"center",
-
-    marginTop:0,
-    marginBottom:0
+  },
+  wrapper: {
+    position:"relative"
   },
   details: {
     position:"absolute",
-    width:"100%",
-    bottom:0,
-    zIndex:10
+    bottom:2,
+    left:50,
+    color: "#4a4a4a",
+    fontWeight:"300"
   }
 });

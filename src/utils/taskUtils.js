@@ -28,9 +28,9 @@ export const parseCreateTaskParams = params => {
     params.title // string
   }", "${
     params.content // string
+  }", "${
+    params.parentId // string (default: "")
   }", ${
-    params.parentId ? `"${params.parentId}"` : `${params.parentId}` // string or null
-  }, ${
     params.complete // boolean (integer)
   }, ${
     params.completedAt // utc datetime (integer)

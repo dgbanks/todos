@@ -15,13 +15,13 @@ class TaskForm extends React.Component {
         content,
         dueDate
       } = props.navigation.state.params.task;
-      this.state = { id, title, content };
+      this.state = { id, title, content, dueDate };
     } else {
       this.state = {
         id: uuid(),
         title: "",
         content: "",
-        parentId: null,
+        parentId: "",
         complete: 0,
         completedAt: null,
         dueDate: null
@@ -92,19 +92,19 @@ class TaskForm extends React.Component {
               checkedIcon="dot-circle-o"
               uncheckedIcon="circle-o"
               checkedColor="dodgerblue"
-              onPress={() => this.setState({ dueDate: dueDate ? null : new Date() })}
+              onPress={() => this.setState({ dueDate: dueDate ? null : new Date().valueOf() })}
             />
           <Text style={dueDateText}>
-            {Boolean(dueDate) && moment(dueDate).format("MMMM Do")}
+            {Boolean(dueDate) && moment(dueDate).format("MMMM Do, YYYY")}
           </Text>
         </View>
         {
           dueDate && (
             <DatePickerIOS
               mode="date"
-              date={this.state.dueDate}
+              date={new Date(this.state.dueDate)}
               minimumDate={new Date()}
-              onDateChange={date => this.setState({ dueDate: date })}
+              onDateChange={date => this.setState({ dueDate: date.valueOf() })}
               />
           )
         }

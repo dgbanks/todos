@@ -4,7 +4,6 @@ import { View, ScrollView, ActivityIndicator, StyleSheet, Button } from "react-n
 import { Icon } from "react-native-elements";
 import { NavigationEvents as Listen } from "react-navigation";
 import TaskItem from "./TaskItem";
-import moment from "moment";
 
 class TaskList extends React.Component {
   constructor(props) {
@@ -25,7 +24,7 @@ class TaskList extends React.Component {
   update(task) {
     this.props.store.updateTask(task.id, {
       complete: task.complete ? 0 : 1,
-      completedAt: !task.complete ? moment().valueOf() : null
+      completedAt: !task.complete ? new Date().valueOf() : null
     });
   }
 

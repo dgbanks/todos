@@ -3,11 +3,15 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { CheckBox, Icon } from "react-native-elements";
 import Interactable from "react-native-interactable";
 import posed from "react-native-pose";
+import moment from "moment"
 
 export default class TaskItem extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { show: false };
+    this.state = {
+      show: false,
+      pastDue: props.task.dueDate < new Date().valueOf()
+    };
     this.snap = this.snap.bind(this);
     this.forceUnsnap = this.forceUnsnap.bind(this);
     this.onClick = this.onClick.bind(this);
@@ -45,25 +49,29 @@ export default class TaskItem extends React.Component {
   }
 
   render() {
-    const { show } = this.state;
+    const { show, pastDue } = this.state;
     const { task, toggleComplete, destroy, navigate } = this.props;
-    const { container, button, checkbox, text, wrapper, details } = styles;
+    const { container, button, checkbox, details } = styles;
+    const detailStyles = Object.assign({}, details, {
+      color: pastDue ? "red" : "dodgerblue"
+    });
+
     return (
       <View style={container}>
         <Button onPress={destroy} pose={show ? "show" : "hide"} style={button}>
           <Icon name="delete" color="white" />
         </Button>
         <Interactable.View
-          ref={node => {this.checkboxWrapper = node}}
+          ref={node => {this.checkboxWrapper = node;}}
           horizontalOnly={true}
           snapPoints={[{ x: 0, id: "closed" }, { x: -50, id: "open" }]}
           onDrag={this.snap}
           boundaries={{ right:0 }}
           style={{ width:"100%", backgroundColor:"white" }}
         >
-          <Wrapper style={wrapper} pose={task.complete ? "checked" : "unchecked"}>
+          <Wrapper pose={task.complete ? "checked" : "unchecked"}>
             <CheckBox
-              title={task.title}
+              title={<Title task={task} style={detailStyles} />}
               checked={Boolean(task.complete)}
               checkedIcon="check-square"
               checkedColor="lightblue"
@@ -71,14 +79,7 @@ export default class TaskItem extends React.Component {
               onIconPress={() => this.onClick(toggleComplete)}
               onLongPress={() => navigate("TaskForm")}
               containerStyle={checkbox}
-              wrapperStyle={{alignItems:"center", width:"100%"}}
-              textStyle={Object.assign({}, text, { marginLeft: task.complete ? 13.5 : 15 })}
             />
-            {
-              task.dueDate && (
-                <Text style={details}>dueDate</Text>
-              )
-            }
           </Wrapper>
         </Interactable.View>
       </View>
@@ -86,13 +87,25 @@ export default class TaskItem extends React.Component {
   }
 }
 
+const Title = ({task: { title, complete, dueDate }, style }) => (
+  <View style={{ flex:1, marginLeft: complete ? 13.25 : 15 }}>
+    <Text style={{fontWeight:"500"}}>{title}</Text>
+    {
+      dueDate && (
+        <Text style={style}>
+          {moment(dueDate).format("MMMM Do, YYYY")}
+        </Text>
+      )
+    }
+</View>
+);
 
 const Button = posed(TouchableOpacity)({
   show: { opacity: 1 },
   hide: { opacity: 0 }
 });
 
-const Wrapper = posed(View)({
+const Wrapper = posed(TouchableOpacity)({
   checked: { opacity: .5 },
   unchecked: { opacity: 1 }
 });
@@ -126,18 +139,12 @@ const styles = StyleSheet.create({
     justifyContent:"center",
     alignItems:"center"
   },
-  text: {
-    fontWeight:"500",
-    flex:1,
-  },
-  wrapper: {
-    position:"relative"
-  },
   details: {
     position:"absolute",
-    bottom:2,
-    left:50,
-    color: "#4a4a4a",
-    fontWeight:"300"
+    top:18,
+    left:10,
+    color: "dodgerblue",
+    fontSize:12,
+    fontWeight:"300",
   }
 });

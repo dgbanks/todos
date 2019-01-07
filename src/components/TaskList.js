@@ -1,7 +1,7 @@
 import React from "react";
 import { observer, inject } from "mobx-react";
-import { View, ScrollView, ActivityIndicator, StyleSheet, Button } from "react-native";
-import { Icon } from "react-native-elements";
+import { View, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
+import { Icon, Button } from "react-native-elements";
 import { NavigationEvents as Listen } from "react-navigation";
 import TaskItem from "./TaskItem";
 
@@ -63,6 +63,10 @@ class TaskList extends React.Component {
               />
             ))
           }
+          <Button
+            title="GO"
+            onPress={() => this.props.navigation.navigate("AnotherTaskForm")}
+          />
         </ScrollView>
       </View>
     );

@@ -5,6 +5,7 @@ import { Icon } from "react-native-elements";
 import TaskList from "./TaskList";
 import TaskView from "./TaskView";
 import TaskForm from "./TaskForm";
+import FormStack from "./FormStack"
 
 const Stack = createStackNavigator({
   TaskList: {
@@ -76,7 +77,23 @@ const Stack = createStackNavigator({
         )
       };
     }
+  },
+  AnotherTaskForm: {
+    screen: FormStack,
+    navigationOptions: ({ navigation }) => ({
+      header: navigation.getParam("noHeader", false) && null,
+      headerTitle: "New Stack",
+      headerLeft: (
+        <Icon
+          name="chevron-left"
+          onPress={() => navigation.goBack()}
+          iconStyle={{marginLeft:10, fontSize:35}}
+        />
+      ),
+    })
   }
+}, {
+
 });
 
 export default createAppContainer(Stack);

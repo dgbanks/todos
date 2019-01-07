@@ -9,26 +9,27 @@ import TaskForm from "./TaskForm";
 const Stack = createStackNavigator({
   TaskList: {
     screen: TaskList,
-    navigationOptions: ({ navigation }) => ({
-      headerTitle: "Tasks",
-      headerLeft: (
-        <Icon
-          name="filter-list"
-          onPress={() => navigation.setParams({
-            hide: !navigation.getParam("hide", false)
-          })}
-          iconStyle={{ marginLeft:20, fontWeight:"bold" }}
-          color={navigation.getParam("hide", false) ? "dodgerblue" : "#a4a4a4"}
-        />
-      ),
-      headerRight: (
-        <Icon
-          name="add"
-          onPress={() => navigation.navigate("TaskForm")}
-          iconStyle={{ marginRight:20, fontWeight:"bold" }}
-        />
-      )
-    })
+    navigationOptions: ({ navigation }) => {
+      const { getParam, setParams, navigate } = navigation;
+      return {
+        headerTitle: "Tasks",
+        headerLeft: (
+          <Icon
+            name="filter-list"
+            onPress={() => setParams({ hide: !getParam("hide", false) })}
+            iconStyle={{ marginLeft:20, fontWeight:"bold" }}
+            color={getParam("hide", false) ? "dodgerblue" : "#a4a4a4"}
+          />
+        ),
+        headerRight: (
+          <Icon
+            name="add"
+            onPress={() => navigate("TaskForm")}
+            iconStyle={{ marginRight:20, fontWeight:"bold" }}
+          />
+        )
+      };
+    }
   },
   TaskView: {
     screen: TaskView,
@@ -46,7 +47,7 @@ const Stack = createStackNavigator({
           name="edit"
           onPress={() => navigation.navigate("TaskForm", {
             task: navigation.state.params.task,
-            updateTask: updatedTask => navigation.setParams({ task: updatedTask })
+            updateTask: task => navigation.setParams({ task: task })
           })}
           iconStyle={{marginRight:10}}
         />
@@ -73,7 +74,7 @@ const Stack = createStackNavigator({
             style={{marginRight:20}}
           />
         )
-      }
+      };
     }
   }
 });

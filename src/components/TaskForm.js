@@ -104,11 +104,10 @@ class TaskForm extends React.Component {
               mode="date"
               date={new Date(this.state.dueDate)}
               minimumDate={new Date()}
-              onDateChange={date => this.setState({ dueDate: date.valueOf() })}
+              onDateChange={d => this.setState({ dueDate: d.valueOf() })}
               />
           )
         }
-
         </ScrollView>
       </View>
     );

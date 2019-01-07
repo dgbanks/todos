@@ -20,12 +20,13 @@ const Stack = createAppContainer(createStackNavigator({
         <Icon
         name="close"
         onPress={() => navigation.goBack()}
-        iconStyle={{marginLeft:10, fontSize:25}}
+        iconStyle={{marginLeft:20, fontSize:25}}
         />
       ),
       headerRight: (
-        <Button
-          title="Save"
+        <Icon
+        name="check-circle"
+        iconStyle={{ marginRight:20, fontSize:25, color:"dodgerblue" }}
         />
       )
     })

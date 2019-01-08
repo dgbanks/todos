@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { CheckBox, Icon } from "react-native-elements";
 import Interactable from "react-native-interactable";
 import posed from "react-native-pose";
-import moment from "moment"
+import { displayDate } from "../utils/timeUtils";
 
 export default class TaskItem extends React.Component {
   constructor(props) {
@@ -93,7 +93,7 @@ const Title = ({task: { title, complete, dueDate }, style }) => (
     {
       dueDate && (
         <Text style={style}>
-          {moment(dueDate).format("MMMM Do, YYYY")}
+          {displayDate(dueDate)}
         </Text>
       )
     }

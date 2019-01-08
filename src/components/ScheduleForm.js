@@ -11,13 +11,6 @@ export default class ScheduleForm extends React.Component {
     const { navigation } = this.props;
     return (
       <View style={styles.container}>
-        {
-          // <NavigationEvents
-          //   onWillFocus={() => rootStack.setParams({ noHeader: true })}
-          //   onWillBlur={() => rootStack.setParams({ noHeader: false })}
-          //   />
-
-        }
       <TouchableOpacity onPress={() => navigation.goBack()}>
       <Text>Schedule Form</Text>
       </TouchableOpacity>

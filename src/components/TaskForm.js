@@ -2,8 +2,9 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import { View, ScrollView, DatePickerIOS, Text, StyleSheet } from "react-native";
 import { FormLabel, FormInput, CheckBox, Button } from "react-native-elements";
+import { NavigationEvents } from "react-navigation";
 import uuid from "uuid";
-import moment from "moment";
+import { displayDate } from "../utils/timeUtils";
 
 class TaskForm extends React.Component {
   constructor(props) {
@@ -13,7 +14,7 @@ class TaskForm extends React.Component {
         id,
         title,
         content,
-        dueDate
+        dueDate,
       } = props.navigation.state.params.task;
       this.state = { id, title, content, dueDate };
     } else {
@@ -24,17 +25,42 @@ class TaskForm extends React.Component {
         parentId: "",
         complete: 0,
         completedAt: null,
-        dueDate: null
+        dueDate: null,
+        schedule:null
       };
     }
     this.error = null;
+    this.handleActivateDueDate = this.handleActivateDueDate.bind(this);
+    this.handleActivateSchedule = this.handleActivateSchedule.bind(this);
     this.saveTask = this.saveTask.bind(this);
+    this.saveSchedule = this.saveSchedule.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
     if (newProps.navigation.getParam("save", false)) {
       this.saveTask();
     }
+  }
+
+  handleActivateDueDate() {
+    const { dueDate, schedule } = this.state;
+    this.setState({
+      dueDate: dueDate ? null : new Date().valueOf(),
+      schedule: !dueDate && null
+    });
+  }
+
+  handleActivateSchedule() {
+    let { dueDate, schedule } = this.state;
+    this.setState({
+      dueDate: !schedule && null,
+      schedule: schedule ? null : {}
+    }, () => {
+      schedule = this.state.schedule;
+      if (schedule) {
+        this.props.navigation.navigate("ScheduleForm", { schedule });
+      }
+    });
   }
 
   saveTask() {
@@ -55,17 +81,23 @@ class TaskForm extends React.Component {
     }
   }
 
+  saveSchedule() {
+
+  }
+
   render() {
-    const { dueDate } = this.state;
+    const { dueDate, schedule } = this.state;
     const {
-      dueDateContainer,
-      dueDateText,
+      toggledFieldContainer,
+      valueText,
       checkboxContainer,
       checkboxLabel
     } = styles;
 
     return (
       <View>
+        <NavigationEvents
+          />
         <ScrollView>
           <FormLabel>Title</FormLabel>
           <FormInput
@@ -84,7 +116,7 @@ class TaskForm extends React.Component {
             onChangeText={input => this.setState({ content: input })}
           />
 
-          <View style={dueDateContainer}>
+        <View style={toggledFieldContainer}>
             <CheckBox
               title={<FormLabel labelStyle={checkboxLabel}>Due Date</FormLabel>}
               containerStyle={checkboxContainer}
@@ -92,10 +124,10 @@ class TaskForm extends React.Component {
               checkedIcon="dot-circle-o"
               uncheckedIcon="circle-o"
               checkedColor="dodgerblue"
-              onPress={() => this.setState({ dueDate: dueDate ? null : new Date().valueOf() })}
+              onPress={this.handleActivateDueDate}
             />
-          <Text style={dueDateText}>
-            {Boolean(dueDate) && moment(dueDate).format("MMMM Do, YYYY")}
+          <Text style={valueText}>
+            {Boolean(dueDate) && displayDate(dueDate)}
           </Text>
         </View>
         {
@@ -108,10 +140,21 @@ class TaskForm extends React.Component {
               />
           )
         }
-        <Button
-          title="ScheduleForm"
-          onPress={() => this.props.navigation.navigate("ScheduleForm")}
-          />
+
+        <View style={toggledFieldContainer}>
+            <CheckBox
+              title={<FormLabel labelStyle={checkboxLabel}>Schedule</FormLabel>}
+              containerStyle={checkboxContainer}
+              checked={Boolean(this.state.schedule)}
+              checkedIcon="dot-circle-o"
+              uncheckedIcon="circle-o"
+              checkedColor="dodgerblue"
+              onPress={this.handleActivateSchedule}
+            />
+          <Text style={valueText}>
+            {Boolean(schedule) }
+          </Text>
+        </View>
         </ScrollView>
       </View>
     );
@@ -121,11 +164,11 @@ class TaskForm extends React.Component {
 export default inject("store")(observer(TaskForm));
 
 const styles = StyleSheet.create({
-  dueDateContainer: {
+  toggledFieldContainer: {
     position:"relative",
     justifyContent:"center"
   },
-  dueDateText: {
+  valueText: {
     position:"absolute",
     right:50,
     color:"dodgerblue",

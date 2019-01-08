@@ -15,9 +15,9 @@ class TaskList extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.navigation.state.params.hide) {
-      this.props.store.filter = true
+      this.props.store.filter = true;
     } else {
-      this.props.store.filter = false
+      this.props.store.filter = false;
     }
   }
 

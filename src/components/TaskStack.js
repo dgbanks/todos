@@ -1,5 +1,9 @@
 import React from "react";
-import { createAppContainer, createStackNavigator, StackViewTransitionConfigs } from "react-navigation";
+import {
+  createAppContainer,
+  createStackNavigator,
+  StackViewTransitionConfigs
+} from "react-navigation";
 import { Button } from "react-native";
 import { Icon } from "react-native-elements";
 import TaskList from "./TaskList";
@@ -101,6 +105,7 @@ const Stack = createStackNavigator({
   }
 }, {
   gesturesEnabled: false,
+  // snippet found in react-navigation docs:
   transitionConfig: (transitionProps, prevTransitionProps) => {
     const { scene: { route: { routeName } } } = transitionProps;
     const isModal = ["ScheduleForm"].some(screenName => (

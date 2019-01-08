@@ -1,16 +1,18 @@
 import React from "react";
-import { createAppContainer, createStackNavigator } from "react-navigation";
+import { createAppContainer, createStackNavigator, withNavigation } from "react-navigation";
 import { View, Button } from "react-native";
 import { Icon } from "react-native-elements";
 import FormTask from "./FormTask";
 import FormSchedule from "./FormSchedule";
 
-const Stack = createAppContainer(createStackNavigator({
+export default createStackNavigator({
   FormTask: {
     screen: FormTask,
-    navigationOptions: ({ navigation, screenProps: { rootStack } }) => ({
+    navigationOptions: (props) => {
+      debugger
+      return ({
       header:null
-    })
+    })}
   },
   FormSchedule: {
     screen: FormSchedule,
@@ -24,30 +26,19 @@ const Stack = createAppContainer(createStackNavigator({
         />
       ),
       headerRight: (
-        <Icon
-        name="check-circle"
-        iconStyle={{ marginRight:20, fontSize:25, color:"dodgerblue" }}
+        <Button
+          title="Done"
+          onPress={() => navigation.goBack()}
         />
       )
     })
   }
 }, {
-  mode: "modal"
-}));
+  mode: "modal",
+  cardOverlayEnabled:true,
+  gesturesEnabled: false
+});
 
-export default class FormStack extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  componentWillReceiveProps(newProps) {
-    // debugger;
-  }
-
-  render() {
-    const { navigation } = this.props;
-    return (
-      <Stack screenProps={{ rootStack: navigation }} />
-    );
-  }
-}
+// export default FormStack = ({ navigation }) => (
+//   <Stack screenProps={{ rootStack: navigation }} />
+// );

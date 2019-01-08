@@ -1,11 +1,11 @@
 import React from "react";
-import { createAppContainer, createStackNavigator } from "react-navigation";
+import { createAppContainer, createStackNavigator, StackViewTransitionConfigs } from "react-navigation";
 import { Button } from "react-native";
 import { Icon } from "react-native-elements";
 import TaskList from "./TaskList";
 import TaskView from "./TaskView";
 import TaskForm from "./TaskForm";
-import FormStack from "./FormStack"
+import ScheduleForm from "./ScheduleForm";
 
 const Stack = createStackNavigator({
   TaskList: {
@@ -78,22 +78,42 @@ const Stack = createStackNavigator({
       };
     }
   },
-  AnotherTaskForm: {
-    screen: FormStack,
+  ScheduleForm: {
+    screen: ScheduleForm,
     navigationOptions: ({ navigation }) => ({
       header: navigation.getParam("noHeader", false) && null,
-      headerTitle: "New Stack",
+      headerTitle: "Schedule",
       headerLeft: (
         <Icon
-          name="chevron-left"
+          name="close"
           onPress={() => navigation.goBack()}
-          iconStyle={{marginLeft:10, fontSize:35}}
+          iconStyle={{ marginLeft:20, fontSize:25 }}
         />
       ),
+      headerRight: (
+        <Icon
+          name="check"
+          onPress={() => navigation.goBack()}
+          iconStyle={{ marginRight:20, fontSize:25, color: "dodgerblue" }}
+        />
+      )
     })
   }
 }, {
-
+  gesturesEnabled: false,
+  transitionConfig: (transitionProps, prevTransitionProps) => {
+    const { scene: { route: { routeName } } } = transitionProps;
+    const isModal = ["ScheduleForm"].some(screenName => (
+      (screenName === routeName) || (prevTransitionProps && (
+        screenName === prevTransitionProps.scene.route.routeName
+      ))
+    ));
+    return StackViewTransitionConfigs.defaultTransitionConfig(
+      transitionProps,
+      prevTransitionProps,
+      isModal
+    );
+  }
 });
 
 export default createAppContainer(Stack);

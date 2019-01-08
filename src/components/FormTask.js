@@ -7,7 +7,8 @@ export default class FormTask extends React.Component {
   }
 
   render() {
-    const { screenProps: { rootStack }, navigation } = this.props;
+    const { navigation } = this.props;
+    // const { state: { params: { rootStack } } } = navigation;
     return (
       <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate("FormSchedule")}>

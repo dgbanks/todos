@@ -108,6 +108,10 @@ class TaskForm extends React.Component {
               />
           )
         }
+        <Button
+          title="ScheduleForm"
+          onPress={() => this.props.navigation.navigate("ScheduleForm")}
+          />
         </ScrollView>
       </View>
     );

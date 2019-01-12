@@ -14,7 +14,7 @@ import ScheduleForm from "./ScheduleForm";
 const Stack = createStackNavigator({
   TaskList: {
     screen: TaskList,
-    navigationOptions: ({ navigation }) => {
+    navigationOptions: ({ navigation, navigationOptions }) => {
       const { getParam, setParams, navigate } = navigation;
       return {
         headerTitle: "Tasks",

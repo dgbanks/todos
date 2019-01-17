@@ -9,31 +9,31 @@ import { displayDate } from "../utils/timeUtils";
 class TaskForm extends React.Component {
   constructor(props) {
     super(props);
-    if (props.navigation.state.params) {
-      const {
-        id,
-        title,
-        content,
-        dueDate,
-      } = props.navigation.state.params.task;
-      this.state = { id, title, content, dueDate };
-    } else {
-      this.state = {
-        id: uuid(),
-        title: "",
-        content: "",
-        parentId: "",
-        complete: 0,
-        completedAt: null,
-        dueDate: null,
-        schedule:null
-      };
-    }
-    this.error = null;
-    this.handleActivateDueDate = this.handleActivateDueDate.bind(this);
-    this.handleActivateSchedule = this.handleActivateSchedule.bind(this);
-    this.saveTask = this.saveTask.bind(this);
-    this.saveSchedule = this.saveSchedule.bind(this);
+    // if (props.navigation.state.params) {
+    //   const {
+    //     id,
+    //     title,
+    //     content,
+    //     dueDate,
+    //   } = props.navigation.state.params.task;
+    //   this.state = { id, title, content, dueDate };
+    // } else {
+    //   this.state = {
+    //     id: uuid(),
+    //     title: "",
+    //     content: "",
+    //     parentId: "",
+    //     complete: 0,
+    //     completedAt: null,
+    //     dueDate: null,
+    //     schedule:null
+    //   };
+    // }
+    this.state = {};
+    // this.handleActivateDueDate = this.handleActivateDueDate.bind(this);
+    // this.handleActivateSchedule = this.handleActivateSchedule.bind(this);
+    // this.saveTask = this.saveTask.bind(this);
+    // this.saveSchedule = this.saveSchedule.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
@@ -63,30 +63,9 @@ class TaskForm extends React.Component {
     });
   }
 
-  saveTask() {
-    const { params } = this.props.navigation.state;
-    if (this.state.title) {
-      if (params && params.task) {
-        this.props.store.updateTask(this.state.id, this.state);
-        if (params.updateTask) {
-          params.updateTask(this.state);
-        }
-      } else {
-        this.props.store.createTask(this.state);
-      }
-      this.props.navigation.goBack();
-    } else {
-      this.error = true;
-      this.titleField.focus();
-    }
-  }
-
-  saveSchedule() {
-
-  }
-
   render() {
     const { dueDate, schedule } = this.state;
+    const { task, error } = this.props.store;
     const {
       toggledFieldContainer,
       valueText,
@@ -96,16 +75,14 @@ class TaskForm extends React.Component {
 
     return (
       <View>
-        <NavigationEvents
-          />
         <ScrollView>
           <FormLabel>Title</FormLabel>
           <FormInput
             ref={node => this.titleField = node}
             placeholder="Title"
-            value={this.state.title}
-            onChangeText={input => this.setState({ title: input })}
-            containerStyle={this.error && { borderBottomColor:"dodgerblue" }}
+            value={task.title || ""}
+            onChangeText={input => task.title = input}
+            containerStyle={error && { borderBottomColor:"dodgerblue" }}
           />
 
           <FormLabel>Content</FormLabel>

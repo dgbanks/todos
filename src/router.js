@@ -62,21 +62,20 @@ const Navigator = createStackNavigator({
   },
   TaskForm: {
     screen: TaskForm,
-    navigationOptions: ({ navigation }) => {
-      const { params } = navigation.state;
+    navigationOptions: ({ navigation: { state: { params } } }) => {
       return {
-        headerTitle: (params && params.task) ? params.task.title : "New Task",
+        headerTitle: params.task ? params.task.title : "New Task",
         headerLeft: (
           <Icon
             name="chevron-left"
-            onPress={() => navigation.goBack()}
-            iconStyle={{marginLeft:10, fontSize:35}}
+            onPress={params.closeForm}
+            iconStyle={{ marginLeft:10, fontSize:35 }}
           />
         ),
         headerRight: (
           <Button
             title="Save"
-            onPress={() => navigation.setParams({ save: true })}
+            onPress={params.saveTask}
             style={{marginRight:20}}
           />
         )
@@ -122,13 +121,18 @@ const Navigator = createStackNavigator({
   }
 });
 
-const defaultGetStateForAction = Navigator.router.getStateForAction;
+const getStateForAction = Navigator.router.getStateForAction;
 
 Navigator.router.getStateForAction = (action, state) => {
-  const params = action.params || {};
-
-  debugger;
-  return defaultGetStateForAction(action, state);
+  let params = action.params || {};
+  if (action.routeName === "TaskForm") {
+    const storeParams = {
+      saveTask: params.task ? Store.updateTask : Store.createTask,
+      closeForm: Store.discardForm
+    };
+    params = Object.assign({}, params, storeParams);
+  }
+  return getStateForAction(Object.assign({}, action, { params }), state);
 };
 
 export default createAppContainer(Navigator);

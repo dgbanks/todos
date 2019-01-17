@@ -1,6 +1,8 @@
-import { decorate, observable, action, computed } from "mobx";
+import { observable, action, computed } from "mobx";
 import SQLite from "react-native-sqlite-storage";
 import moment from "moment";
+import uuid from "uuid";
+import NavigationUtils from "./utils/navigationUtils";
 import {
   taskSchema,
   parseUpdateTaskParams,
@@ -9,9 +11,12 @@ import {
 
 class Store {
   @observable database = {};
+  @observable data = [];
   @observable fetching = true;
   @observable filter = false;
-  @observable data = [];
+  @observable task = {};
+  @observable schedule = {};
+  @observable error = false;
 
   constructor(){
     SQLite.openDatabase({ name: "database", location: "Library"}, db => {
@@ -58,24 +63,30 @@ class Store {
     .sort((a,b) => a.title < b.title ? -1 : 1);
   }
 
-  @action createTask(params) {
-    this.database.transaction(tx => {
-      tx.executeSql(
-        `INSERT INTO Tasks VALUES ${parseCreateTaskParams(params)}`,
-        [],
-        (_, res) => {
-          _.executeSql(
-            "SELECT * FROM Tasks WHERE id = ?",
-            [params.id],
-            (_, res) => {
-              this.data = this.data.concat(res.rows.raw());
-            },
-            (_, err) => {debugger}
-          )
-        },
-        (_, err) => {debugger}
-      )
-    })
+  @action createTask = () => {
+    if (this.task.title) {
+      this.task.id = uuid();
+      this.database.transaction(tx => {
+        tx.executeSql(
+          `INSERT INTO Tasks VALUES ${parseCreateTaskParams(this.task)}`,
+          [],
+          (_, res) => {
+            _.executeSql(
+              "SELECT * FROM Tasks WHERE id = ?",
+              [this.task.id],
+              (_, res) => {
+                this.data = this.data.concat(res.rows.raw());
+                this.discardForm();
+              },
+              (_, err) => {debugger}
+            )
+          },
+          (_, err) => {debugger}
+        )
+      })
+    } else {
+      this.error = true;
+    }
   }
 
   @action updateTask(taskId, params) {
@@ -98,17 +109,21 @@ class Store {
     })
   }
 
-  @action deleteTask(taskId) {
+  @action deleteTask = taskId => {
     this.database.transaction(tx => {
       tx.executeSql(
         "DELETE FROM Tasks WHERE id = ?",
         [taskId],
-        (_, res) => {
-          this.data = this.data.filter(d => d.id !== taskId);
-        },
+        (_, res) => {this.data = this.data.filter(d => d.id !== taskId)},
         (_, err) => {debugger}
       )
     })
+  }
+
+  @action discardForm = () => {
+    this.task = {};
+    this.error = false;
+    NavigationUtils.goBack();
   }
 }
 

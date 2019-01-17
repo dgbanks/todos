@@ -9,6 +9,7 @@ export const taskSchema = `(${[
 ].join(", ")})`;
 
 export const parseUpdateTaskParams = params => {
+  debugger
   const result = Object.entries(params).map(entry => (
     `${entry[0]} = ${
       [
@@ -27,15 +28,15 @@ export const parseCreateTaskParams = params => {
   }", "${
     params.title // string
   }", "${
-    params.content // string
+    params.content || "" // string
   }", "${
-    params.parentId // string (default: "")
+    params.parentId || "" // string (default: "")
   }", ${
-    params.complete // boolean (integer)
+    params.complete || 0 // boolean (integer)
   }, ${
-    params.completedAt // utc datetime (integer)
+    params.completedAt || null // utc datetime (integer)
   }, ${
-    params.dueDate && params.dueDate.valueOf() // utc datetime (integer)
+    params.dueDate && params.dueDate.valueOf() || null // utc datetime (integer)
   })`;
   return result;
 };

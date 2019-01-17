@@ -1,20 +1,21 @@
 import React from "react";
+import { Button } from "react-native";
+import { Icon } from "react-native-elements";
 import {
   createAppContainer,
   createStackNavigator,
   StackViewTransitionConfigs
 } from "react-navigation";
-import { Button } from "react-native";
-import { Icon } from "react-native-elements";
-import TaskList from "./TaskList";
-import TaskView from "./TaskView";
-import TaskForm from "./TaskForm";
-import ScheduleForm from "./ScheduleForm";
+import TaskList from "./components/TaskList";
+import TaskView from "./components/TaskView";
+import TaskForm from "./components/TaskForm";
+import ScheduleForm from "./components/ScheduleForm";
+import Store from "./store";
 
-const Stack = createStackNavigator({
+const Navigator = createStackNavigator({
   TaskList: {
     screen: TaskList,
-    navigationOptions: ({ navigation, navigationOptions }) => {
+    navigationOptions: ({ navigation }) => {
       const { getParam, setParams, navigate } = navigation;
       return {
         headerTitle: "Tasks",
@@ -121,4 +122,13 @@ const Stack = createStackNavigator({
   }
 });
 
-export default createAppContainer(Stack);
+const defaultGetStateForAction = Navigator.router.getStateForAction;
+
+Navigator.router.getStateForAction = (action, state) => {
+  const params = action.params || {};
+
+  debugger;
+  return defaultGetStateForAction(action, state);
+};
+
+export default createAppContainer(Navigator);

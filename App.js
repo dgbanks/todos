@@ -1,13 +1,14 @@
 import React from 'react';
 import { Provider } from "mobx-react";
-import TaskStack from "./src/components/TaskStack";
+import Router from "./src/router";
 import Store from "./src/store";
+import { setNavigator } from "./src/utils/navigationUtils";
 
 export default class App extends React.Component {
   render() {
     return (
       <Provider {...{ store: Store }}>
-        <TaskStack />
+        <Router ref={ref => setNavigator(ref)} />
       </Provider>
     );
   }

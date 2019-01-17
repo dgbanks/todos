@@ -8,10 +8,10 @@ import {
 } from "./utils/taskUtils";
 
 class Store {
-  database = {};
-  fetching = true;
-  filter = false;
-  data = [];
+  @observable database = {};
+  @observable fetching = true;
+  @observable filter = false;
+  @observable data = [];
 
   constructor(){
     SQLite.openDatabase({ name: "database", location: "Library"}, db => {
@@ -52,13 +52,13 @@ class Store {
     });
   }
 
-  get tasks() {
+  @computed get tasks() {
     return this.data.slice()
     .filter(t => !(this.filter && t.complete))
     .sort((a,b) => a.title < b.title ? -1 : 1);
   }
 
-  createTask(params) {
+  @action createTask(params) {
     this.database.transaction(tx => {
       tx.executeSql(
         `INSERT INTO Tasks VALUES ${parseCreateTaskParams(params)}`,
@@ -78,7 +78,7 @@ class Store {
     })
   }
 
-  updateTask(taskId, params) {
+  @action updateTask(taskId, params) {
     this.database.transaction(tx => {
       tx.executeSql(
         `UPDATE Tasks SET ${parseUpdateTaskParams(params)} WHERE id = ?`,
@@ -98,7 +98,7 @@ class Store {
     })
   }
 
-  deleteTask(taskId) {
+  @action deleteTask(taskId) {
     this.database.transaction(tx => {
       tx.executeSql(
         "DELETE FROM Tasks WHERE id = ?",
@@ -111,16 +111,5 @@ class Store {
     })
   }
 }
-
-decorate(Store, {
-  database: observable,
-  fetching: observable,
-  data: observable,
-  filter: observable,
-  tasks: computed,
-  createTask: action,
-  updateTask: action,
-  deleteTask: action,
-});
 
 export default new Store();

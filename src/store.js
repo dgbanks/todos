@@ -15,7 +15,7 @@ class Store {
   @observable fetching = true;
   @observable filter = false;
   @observable task = {};
-  @observable schedule = {};
+  @observable schedule = null;
   @observable error = false;
 
   constructor(){

@@ -3,69 +3,46 @@ import { inject, observer } from "mobx-react";
 import { View, ScrollView, DatePickerIOS, Text, StyleSheet } from "react-native";
 import { FormLabel, FormInput, CheckBox, Button } from "react-native-elements";
 import { NavigationEvents } from "react-navigation";
-import uuid from "uuid";
 import { displayDate } from "../utils/timeUtils";
 
 class TaskForm extends React.Component {
   constructor(props) {
     super(props);
-    // if (props.navigation.state.params) {
-    //   const {
-    //     id,
-    //     title,
-    //     content,
-    //     dueDate,
-    //   } = props.navigation.state.params.task;
-    //   this.state = { id, title, content, dueDate };
-    // } else {
-    //   this.state = {
-    //     id: uuid(),
-    //     title: "",
-    //     content: "",
-    //     parentId: "",
-    //     complete: 0,
-    //     completedAt: null,
-    //     dueDate: null,
-    //     schedule:null
-    //   };
-    // }
     this.state = {};
-    // this.handleActivateDueDate = this.handleActivateDueDate.bind(this);
-    // this.handleActivateSchedule = this.handleActivateSchedule.bind(this);
-    // this.saveTask = this.saveTask.bind(this);
-    // this.saveSchedule = this.saveSchedule.bind(this);
+    this.handleDueDate = this.handleDueDate.bind(this);
+    this.handleSchedule = this.handleSchedule.bind(this);
+    this.openScheduleForm = this.openScheduleForm.bind(this);
   }
 
-  componentWillReceiveProps(newProps) {
-    if (newProps.navigation.getParam("save", false)) {
-      this.saveTask();
+  handleDueDate() {
+    const { task } = this.props.store;
+    if (task.dueDate) {
+      task.dueDate = null;
+    } else {
+      task.dueDate = new Date().valueOf();
+      task.schedule = null;
     }
   }
 
-  handleActivateDueDate() {
-    const { dueDate, schedule } = this.state;
-    this.setState({
-      dueDate: dueDate ? null : new Date().valueOf(),
-      schedule: !dueDate && null
-    });
+  handleSchedule() {
+    const { task } = this.props.store;
+    if (task.schedule) {
+      task.schedule = null;
+    } else {
+      task.schedule = {};
+      task.dueDate = null;
+      this.props.navigation.navigate("ScheduleForm");
+    }
   }
 
-  handleActivateSchedule() {
-    let { dueDate, schedule } = this.state;
-    this.setState({
-      dueDate: !schedule && null,
-      schedule: schedule ? null : {}
-    }, () => {
-      schedule = this.state.schedule;
-      if (schedule) {
-        this.props.navigation.navigate("ScheduleForm", { schedule });
-      }
-    });
+  openScheduleForm() {
+    if (this.props.store.task.schedule) {
+      this.props.navigation.navigate("ScheduleForm");
+    }
   }
 
   render() {
-    const { dueDate, schedule } = this.state;
-    const { task, error } = this.props.store;
+    const { task, error, schedule } = this.props.store;
     const {
       toggledFieldContainer,
       valueText,
@@ -89,31 +66,31 @@ class TaskForm extends React.Component {
           <FormInput
             multiline
             placeholder="Content"
-            value={this.state.content}
-            onChangeText={input => this.setState({ content: input })}
+            value={task.content || ""}
+            onChangeText={input => task.content = input}
           />
 
         <View style={toggledFieldContainer}>
             <CheckBox
               title={<FormLabel labelStyle={checkboxLabel}>Due Date</FormLabel>}
               containerStyle={checkboxContainer}
-              checked={Boolean(this.state.dueDate)}
+              checked={Boolean(task.dueDate)}
               checkedIcon="dot-circle-o"
               uncheckedIcon="circle-o"
               checkedColor="dodgerblue"
-              onPress={this.handleActivateDueDate}
+              onPress={this.handleDueDate}
             />
           <Text style={valueText}>
-            {Boolean(dueDate) && displayDate(dueDate)}
+            {Boolean(task.dueDate) && displayDate(task.dueDate)}
           </Text>
         </View>
         {
-          dueDate && (
+          task.dueDate && (
             <DatePickerIOS
               mode="date"
-              date={new Date(this.state.dueDate)}
+              date={new Date(task.dueDate)}
               minimumDate={new Date()}
-              onDateChange={d => this.setState({ dueDate: d.valueOf() })}
+              onDateChange={d => task.dueDate = d.valueOf()}
               />
           )
         }
@@ -122,14 +99,15 @@ class TaskForm extends React.Component {
             <CheckBox
               title={<FormLabel labelStyle={checkboxLabel}>Schedule</FormLabel>}
               containerStyle={checkboxContainer}
-              checked={Boolean(this.state.schedule)}
+              checked={Boolean(task.schedule)}
               checkedIcon="dot-circle-o"
               uncheckedIcon="circle-o"
               checkedColor="dodgerblue"
-              onPress={this.handleActivateSchedule}
+              onPress={this.openScheduleForm}
+              onIconPress={this.handleSchedule}
             />
           <Text style={valueText}>
-            {Boolean(schedule) }
+            {Boolean(task.schedule) }
           </Text>
         </View>
         </ScrollView>

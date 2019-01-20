@@ -1,7 +1,7 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Icon } from "react-native-elements"
+import { Icon } from "react-native-elements";
 
 class DatesOfMonth extends React.Component {
   constructor(props) {
@@ -56,8 +56,9 @@ const styles = StyleSheet.create({
     flexDirection:"row",
     flexWrap:"wrap",
     justifyContent:"center",
-    borderColor:"gray",
-    borderWidth:1
+    borderColor:"lightgray",
+    borderWidth:1,
+    backgroundColor:"lightgray"
   },
   date: {
     width:"14%",
@@ -65,8 +66,9 @@ const styles = StyleSheet.create({
     position:"relative",
     justifyContent:"center",
     alignItems:"center",
-    borderColor:"gray",
-    borderWidth:1
+    borderColor:"lightgray",
+    borderWidth:1,
+    backgroundColor:"white"
   },
   text: {
     position:"absolute",
@@ -82,7 +84,8 @@ const styles = StyleSheet.create({
     position:"relative",
     justifyContent:"center",
     alignItems:"center",
-    borderColor:"gray",
-    borderWidth:1
-  }
+    borderColor:"lightgray",
+    borderWidth:1,
+    backgroundColor:"white"
+  },
 });

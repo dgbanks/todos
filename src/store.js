@@ -15,7 +15,7 @@ class Store {
   @observable fetching = true;
   @observable filter = false;
   @observable task = {};
-  @observable schedule = null;
+  @observable schedule = {};
   @observable error = false;
 
   constructor(){
@@ -76,7 +76,7 @@ class Store {
               [this.task.id],
               (_, res) => {
                 this.data = this.data.concat(res.rows.raw());
-                this.discardForm();
+                this.discardTaskForm();
               },
               (_, err) => {debugger}
             )
@@ -120,8 +120,19 @@ class Store {
     })
   }
 
-  @action discardForm = () => {
+  @action saveSchedule = () => {
+    this.task.schedule = this.schedule;
+    this.discardScheduleForm()
+  }
+
+  @action discardTaskForm = () => {
     this.task = {};
+    this.error = false;
+    NavigationUtils.goBack();
+  }
+
+  @action discardScheduleForm = () => {
+    this.schedule = {};
     this.error = false;
     NavigationUtils.goBack();
   }

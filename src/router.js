@@ -84,20 +84,19 @@ const Navigator = createStackNavigator({
   },
   ScheduleForm: {
     screen: ScheduleForm,
-    navigationOptions: ({ navigation }) => ({
-      header: navigation.getParam("noHeader", false) && null,
+    navigationOptions: ({ navigation: { state: { params } } }) => ({
       headerTitle: "Schedule",
       headerLeft: (
         <Icon
           name="close"
-          onPress={() => navigation.goBack()}
+          onPress={params.closeForm}
           iconStyle={{ marginLeft:20, fontSize:25 }}
         />
       ),
       headerRight: (
         <Icon
           name="check"
-          onPress={() => navigation.goBack()}
+          onPress={params.saveSchedule}
           iconStyle={{ marginRight:20, fontSize:25, color: "dodgerblue" }}
         />
       )
@@ -105,14 +104,14 @@ const Navigator = createStackNavigator({
   }
 }, {
   gesturesEnabled: false,
-  // snippet found in react-navigation docs:
+  // snippet from react-navigation docs:
   transitionConfig: (transitionProps, prevTransitionProps) => {
     const { scene: { route: { routeName } } } = transitionProps;
-    const isModal = ["ScheduleForm"].some(screenName => (
-      (screenName === routeName) || (prevTransitionProps && (
-        screenName === prevTransitionProps.scene.route.routeName
+    const isModal = (
+      (routeName === "ScheduleForm") || (prevTransitionProps && (
+        prevTransitionProps.scene.route.routeName === "ScheduleForm"
       ))
-    ));
+    );
     return StackViewTransitionConfigs.defaultTransitionConfig(
       transitionProps,
       prevTransitionProps,
@@ -128,7 +127,14 @@ Navigator.router.getStateForAction = (action, state) => {
   if (action.routeName === "TaskForm") {
     const storeParams = {
       saveTask: params.task ? Store.updateTask : Store.createTask,
-      closeForm: Store.discardForm
+      closeForm: Store.discardTaskForm
+    };
+    params = Object.assign({}, params, storeParams);
+  }
+  if (action.routeName === "ScheduleForm") {
+    const storeParams = {
+      saveSchedule: Store.saveSchedule,
+      closeForm: Store.discardScheduleForm
     };
     params = Object.assign({}, params, storeParams);
   }

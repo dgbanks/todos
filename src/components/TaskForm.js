@@ -1,9 +1,9 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { View, ScrollView, DatePickerIOS, Text, StyleSheet } from "react-native";
-import { FormLabel, FormInput, CheckBox, Button } from "react-native-elements";
-import { NavigationEvents } from "react-navigation";
+import { FormLabel, FormInput } from "react-native-elements";
 import { displayDate } from "../utils/timeUtils";
+import Checkbox from "./ui/Checkbox";
 
 class TaskForm extends React.Component {
   constructor(props) {
@@ -29,7 +29,6 @@ class TaskForm extends React.Component {
     if (task.schedule) {
       task.schedule = null;
     } else {
-      task.schedule = {};
       task.dueDate = null;
       this.props.navigation.navigate("ScheduleForm");
     }
@@ -46,8 +45,6 @@ class TaskForm extends React.Component {
     const {
       toggledFieldContainer,
       valueText,
-      checkboxContainer,
-      checkboxLabel
     } = styles;
 
     return (
@@ -71,13 +68,9 @@ class TaskForm extends React.Component {
           />
 
         <View style={toggledFieldContainer}>
-            <CheckBox
-              title={<FormLabel labelStyle={checkboxLabel}>Due Date</FormLabel>}
-              containerStyle={checkboxContainer}
+            <Checkbox
+              title="Due Date"
               checked={Boolean(task.dueDate)}
-              checkedIcon="dot-circle-o"
-              uncheckedIcon="circle-o"
-              checkedColor="dodgerblue"
               onPress={this.handleDueDate}
             />
           <Text style={valueText}>
@@ -96,13 +89,9 @@ class TaskForm extends React.Component {
         }
 
         <View style={toggledFieldContainer}>
-            <CheckBox
-              title={<FormLabel labelStyle={checkboxLabel}>Schedule</FormLabel>}
-              containerStyle={checkboxContainer}
+            <Checkbox
+              title="Schedule"
               checked={Boolean(task.schedule)}
-              checkedIcon="dot-circle-o"
-              uncheckedIcon="circle-o"
-              checkedColor="dodgerblue"
               onPress={this.openScheduleForm}
               onIconPress={this.handleSchedule}
             />
@@ -128,12 +117,5 @@ const styles = StyleSheet.create({
     right:50,
     color:"dodgerblue",
     fontWeight:"500"
-  },
-  checkboxContainer: {
-    backgroundColor:"transparent",
-    borderWidth:0
-  },
-  checkboxLabel: {
-    marginTop:0
   }
 });

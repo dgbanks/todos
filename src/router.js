@@ -69,7 +69,7 @@ const Navigator = createStackNavigator({
           <Icon
             name="chevron-left"
             onPress={params.closeForm}
-            iconStyle={{ marginLeft:10, fontSize:35 }}
+            iconStyle={{ marginLeft:15, fontSize:35 }}
           />
         ),
         headerRight: (
@@ -94,10 +94,9 @@ const Navigator = createStackNavigator({
         />
       ),
       headerRight: (
-        <Icon
-          name="check"
+        <Button
+          title="Done"
           onPress={params.saveSchedule}
-          iconStyle={{ marginRight:20, fontSize:25, color: "dodgerblue" }}
         />
       )
     })

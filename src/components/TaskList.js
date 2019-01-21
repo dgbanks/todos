@@ -1,6 +1,6 @@
 import React from "react";
 import { observer, inject } from "mobx-react";
-import { View, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
 import { Icon } from "react-native-elements";
 import { NavigationEvents as Listen } from "react-navigation";
 import TaskItem from "./TaskItem";

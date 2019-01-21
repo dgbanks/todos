@@ -1,9 +1,13 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { View, ScrollView, DatePickerIOS, Text, StyleSheet } from "react-native";
+import { View, ScrollView, DatePickerIOS, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { FormLabel, FormInput } from "react-native-elements";
-import { displayDate } from "../utils/timeUtils";
 import Checkbox from "./ui/Checkbox";
+import {
+  displayDate,
+  displayWeeklySchedule,
+  displayMonthlySchedule
+} from "../utils/timeUtils";
 
 class TaskForm extends React.Component {
   constructor(props) {
@@ -29,23 +33,23 @@ class TaskForm extends React.Component {
     if (task.schedule) {
       task.schedule = null;
     } else {
-      task.dueDate = null;
+      // task.dueDate = null; moved to store
       this.props.navigation.navigate("ScheduleForm");
     }
   }
 
   openScheduleForm() {
-    if (this.props.store.task.schedule) {
+    const { task } = this.props.store;
+    if (task.schedule) {
+      this.props.store.schedule = task.schedule;
       this.props.navigation.navigate("ScheduleForm");
     }
   }
 
   render() {
-    const { task, error, schedule } = this.props.store;
-    const {
-      toggledFieldContainer,
-      valueText,
-    } = styles;
+    const { task, error } = this.props.store;
+    const { schedule } = task;
+    const { toggledFieldContainer, valueText, wrapper, text } = styles;
 
     return (
       <View>
@@ -68,14 +72,21 @@ class TaskForm extends React.Component {
           />
 
         <View style={toggledFieldContainer}>
-            <Checkbox
-              title="Due Date"
-              checked={Boolean(task.dueDate)}
-              onPress={this.handleDueDate}
-            />
-          <Text style={valueText}>
-            {Boolean(task.dueDate) && displayDate(task.dueDate)}
-          </Text>
+          <Checkbox
+            title="Due Date"
+            checked={Boolean(task.dueDate)}
+            onPress={this.handleDueDate}
+            value={Boolean(task.dueDate) && displayDate(task.dueDate)}
+          />
+        {
+          // <TouchableOpacity style={wrapper}>
+          //   <Text style={text}>
+          //     {Boolean(task.dueDate) && displayDate(task.dueDate)}
+          //   </Text>
+          // </TouchableOpacity>
+
+        }
+
         </View>
         {
           task.dueDate && (
@@ -84,20 +95,45 @@ class TaskForm extends React.Component {
               date={new Date(task.dueDate)}
               minimumDate={new Date()}
               onDateChange={d => task.dueDate = d.valueOf()}
-              />
+            />
           )
         }
 
         <View style={toggledFieldContainer}>
-            <Checkbox
-              title="Schedule"
-              checked={Boolean(task.schedule)}
-              onPress={this.openScheduleForm}
-              onIconPress={this.handleSchedule}
-            />
-          <Text style={valueText}>
-            {Boolean(task.schedule) }
-          </Text>
+          <Checkbox
+            title="Schedule"
+            checked={Boolean(schedule)}
+            onPress={this.openScheduleForm}
+            onIconPress={this.handleSchedule}
+            value={
+              (!!schedule && schedule.basis === "weekly") ? (
+                displayWeeklySchedule(schedule.days)
+              ) : (!!schedule && schedule.basis === "monthly") ? (
+                displayMonthlySchedule(schedule.days)
+              ) : ""
+            }
+          />
+        {
+          // <TouchableOpacity style={wrapper}>
+          //   <Text style={text}>
+          //     {
+          //       (!!task.schedule && task.schedule.basis === "weekly") && (
+          //         displayWeeklySchedule(task.schedule.days)
+          //       )
+          //     }
+          //   </Text>
+          // </TouchableOpacity>
+          // <TouchableOpacity style={wrapper}>
+          //   <Text style={text}>
+          //     {
+          //       (!!task.schedule && task.schedule.basis === "monthly") && (
+          //         displayMonthlySchedule(task.schedule.days)
+          //       )
+          //     }
+          //   </Text>
+          // </TouchableOpacity>
+
+        }
         </View>
         </ScrollView>
       </View>
@@ -116,6 +152,18 @@ const styles = StyleSheet.create({
     position:"absolute",
     right:50,
     color:"dodgerblue",
-    fontWeight:"500"
+    fontWeight:"500",
+    width:"40%",
+    flexWrap:"wrap",
+    textAlign:"center",
+  },
+  wrapper: {
+    position:"absolute",
+    right:50,
+    width:"40%",
+  },
+  text: {
+    color:"dodgerblue",
+    fontWeight:"500",
   }
 });

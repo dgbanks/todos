@@ -1,13 +1,18 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { CheckBox, FormLabel } from "react-native-elements";
 
 export default Checkbox = props => {
-  const { container, label } = styles;
+  const { container, title, label, value } = styles;
   return (
     <CheckBox
       {...props}
-      title={<FormLabel labelStyle={label}>{props.title}</FormLabel>}
+      title={
+        <View style={title}>
+          <FormLabel labelStyle={label}>{props.title}</FormLabel>
+          <Text style={value}>{props.value}</Text>
+        </View>
+      }
       containerStyle={container}
       checkedIcon="dot-circle-o"
       uncheckedIcon="circle-o"
@@ -17,21 +22,24 @@ export default Checkbox = props => {
 };
 
 const styles = StyleSheet.create({
-  fieldContainer: {
-    position:"relative",
-    justifyContent:"center"
-  },
-  valueText: {
-    position:"absolute",
-    right:50,
-    color:"dodgerblue",
-    fontWeight:"500"
-  },
   container: {
     backgroundColor:"transparent",
     borderWidth:0
   },
+  title: {
+    width:"90%",
+    position:"relative",
+    justifyContent:"center"
+  },
   label: {
     marginTop:0
+  },
+  value: {
+    position:"absolute",
+    right:0,
+    width:"50%",
+    color:"dodgerblue",
+    fontWeight:"500",
+    textAlign:"center"
   }
 });

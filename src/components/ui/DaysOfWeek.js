@@ -24,7 +24,7 @@ class DaysOfWeek extends React.Component {
     if (schedule.days.includes(day)) {
       schedule.days = schedule.days.filter(d => d !== day);
     } else {
-      schedule.days = [...schedule.days, day];
+      schedule.days = [...schedule.days, day].sort((a,b) => a < b ? -1 : 1);
     }
   }
 

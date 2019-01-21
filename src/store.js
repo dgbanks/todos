@@ -121,7 +121,11 @@ class Store {
   }
 
   @action saveSchedule = () => {
-    this.task.schedule = this.schedule;
+    if (this.schedule.days.length) {
+      this.task.schedule = this.schedule;
+      this.task.dueDate = null;
+      // dueDate nullify moved from component to store for improved UX
+    }
     this.discardScheduleForm()
   }
 

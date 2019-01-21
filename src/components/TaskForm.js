@@ -1,7 +1,8 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { View, ScrollView, DatePickerIOS, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, ScrollView, DatePickerIOS, StyleSheet } from "react-native";
 import { FormLabel, FormInput } from "react-native-elements";
+import posed from "react-native-pose";
 import Checkbox from "./ui/Checkbox";
 import {
   displayDate,
@@ -42,13 +43,12 @@ class TaskForm extends React.Component {
     const { task } = this.props.store;
     if (task.schedule) {
       this.props.store.schedule = task.schedule;
-      this.props.navigation.navigate("ScheduleForm");
     }
+    this.props.navigation.navigate("ScheduleForm");
   }
 
   render() {
-    const { task, error } = this.props.store;
-    const { schedule } = task;
+    const { task, task: { schedule }, error } = this.props.store;
     const { toggledFieldContainer, valueText, wrapper, text } = styles;
 
     return (
@@ -71,35 +71,25 @@ class TaskForm extends React.Component {
             onChangeText={input => task.content = input}
           />
 
-        <View style={toggledFieldContainer}>
           <Checkbox
             title="Due Date"
             checked={Boolean(task.dueDate)}
             onPress={this.handleDueDate}
             value={Boolean(task.dueDate) && displayDate(task.dueDate)}
           />
-        {
-          // <TouchableOpacity style={wrapper}>
-          //   <Text style={text}>
-          //     {Boolean(task.dueDate) && displayDate(task.dueDate)}
-          //   </Text>
-          // </TouchableOpacity>
+          <DatePickerWrapper pose={task.dueDate ? "show" : "hide"}>
+            {
+              task.dueDate && (
+                <DatePickerIOS
+                  mode="date"
+                  date={new Date(task.dueDate)}
+                  minimumDate={new Date()}
+                  onDateChange={d => task.dueDate = d.valueOf()}
+                />
+              )
+            }
+          </DatePickerWrapper>
 
-        }
-
-        </View>
-        {
-          task.dueDate && (
-            <DatePickerIOS
-              mode="date"
-              date={new Date(task.dueDate)}
-              minimumDate={new Date()}
-              onDateChange={d => task.dueDate = d.valueOf()}
-            />
-          )
-        }
-
-        <View style={toggledFieldContainer}>
           <Checkbox
             title="Schedule"
             checked={Boolean(schedule)}
@@ -113,28 +103,6 @@ class TaskForm extends React.Component {
               ) : ""
             }
           />
-        {
-          // <TouchableOpacity style={wrapper}>
-          //   <Text style={text}>
-          //     {
-          //       (!!task.schedule && task.schedule.basis === "weekly") && (
-          //         displayWeeklySchedule(task.schedule.days)
-          //       )
-          //     }
-          //   </Text>
-          // </TouchableOpacity>
-          // <TouchableOpacity style={wrapper}>
-          //   <Text style={text}>
-          //     {
-          //       (!!task.schedule && task.schedule.basis === "monthly") && (
-          //         displayMonthlySchedule(task.schedule.days)
-          //       )
-          //     }
-          //   </Text>
-          // </TouchableOpacity>
-
-        }
-        </View>
         </ScrollView>
       </View>
     );
@@ -142,6 +110,11 @@ class TaskForm extends React.Component {
 }
 
 export default inject("store")(observer(TaskForm));
+
+const DatePickerWrapper = posed(View)({
+  hide: { height:0 },
+  show: { height: 200 }
+});
 
 const styles = StyleSheet.create({
   toggledFieldContainer: {

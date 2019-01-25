@@ -34,13 +34,9 @@ class ScheduleForm extends React.Component {
           selectedIndex={basis === "weekly" ? 0 : 1}
           selectedButtonStyle={{ backgroundColor:"dodgerblue" }}
           />
-        {
-          basis === "weekly" && <DaysOfWeek />
-        }
+        {basis === "weekly" && <DaysOfWeek />}
 
-        {
-          basis === "monthly" && <DatesOfMonth />
-        }
+        {basis === "monthly" && <DatesOfMonth />}
       </View>
     );
   }

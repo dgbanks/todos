@@ -13,3 +13,15 @@ export const displayWeeklySchedule = days => (
 export const displayMonthlySchedule = dates => (
   "MONTHLY"
 );
+
+export const displaySchedule = ({ basis, days }) => {
+  if (basis === "weekly") {
+    if (days.length === 7) {
+      return "Every day";
+    } else {
+      return `Every ${days.map(d => DAYS[d]).join(", ")}`;
+    }
+  } else {
+    return "MONTHLY";
+  }
+};

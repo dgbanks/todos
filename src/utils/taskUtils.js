@@ -5,25 +5,35 @@ export const taskSchema = `(${[
   "parentId",
   "complete",
   "completedAt",
-  "dueDate"
+  "dueDate",
+  "schedule"
 ].join(", ")})`;
 
-export const parseUpdateTaskParams = params => {
-  debugger
-  const result = Object.entries(params).map(entry => (
+export const taskWithSchedule = task => {
+  const array = task.schedule.split(",");
+  return Object.assign({}, task, {
+    schedule: {
+      [array[0]]: array[1],
+      [array[2]]: array.slice(3).map(n => parseInt(n))
+    }
+  });
+};
+
+export const parseUpdateParams = params => (
+  Object.entries(params).map(entry => (
     `${entry[0]} = ${
       [
         "complete",
         "completedAt",
         "dueDate"
-      ].includes(entry[0]) ? `${entry[1]}` : `"${entry[1]}"`
+      ].includes(entry[0]) ? `${entry[1]}` : `"${
+        entry[0] === "schedule" ? Object.entries(entry[1]) : entry[1]
+      }"`
     }`
-  )).join(", ");
-  return result;
-};
+  )).join(", ")
+);
 
-export const parseCreateTaskParams = params => {
-  const result = `("${
+export const parseCreateParams = params => `("${
     params.id // string
   }", "${
     params.title // string
@@ -36,7 +46,7 @@ export const parseCreateTaskParams = params => {
   }, ${
     params.completedAt || null // utc datetime (integer)
   }, ${
-    params.dueDate && params.dueDate.valueOf() || null // utc datetime (integer)
-  })`;
-  return result;
-};
+    params.dueDate ? params.dueDate.valueOf() : null // utc datetime (integer)
+  }, "${
+    params.schedule ? `${Object.entries(params.schedule)}` : ""
+}")`;

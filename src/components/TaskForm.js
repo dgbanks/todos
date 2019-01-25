@@ -4,16 +4,16 @@ import { View, ScrollView, DatePickerIOS, StyleSheet } from "react-native";
 import { FormLabel, FormInput } from "react-native-elements";
 import posed from "react-native-pose";
 import Checkbox from "./ui/Checkbox";
-import {
-  displayDate,
-  displayWeeklySchedule,
-  displayMonthlySchedule
-} from "../utils/timeUtils";
+import { displayDate, displaySchedule } from "../utils/timeUtils";
 
 class TaskForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    const { navigation: { state: { params: { task } } } } = props;
+    if (task) {
+      props.store.task = task;
+    }
+
     this.handleDueDate = this.handleDueDate.bind(this);
     this.handleSchedule = this.handleSchedule.bind(this);
     this.openScheduleForm = this.openScheduleForm.bind(this);
@@ -95,13 +95,7 @@ class TaskForm extends React.Component {
             checked={Boolean(schedule)}
             onPress={this.openScheduleForm}
             onIconPress={this.handleSchedule}
-            value={
-              (!!schedule && schedule.basis === "weekly") ? (
-                displayWeeklySchedule(schedule.days)
-              ) : (!!schedule && schedule.basis === "monthly") ? (
-                displayMonthlySchedule(schedule.days)
-              ) : ""
-            }
+            value={schedule && displaySchedule(schedule)}
           />
         </ScrollView>
       </View>

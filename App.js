@@ -13,4 +13,3 @@ export default class App extends React.Component {
     );
   }
 }
-// line 9 so that children can inject("store")

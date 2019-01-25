@@ -22,10 +22,7 @@ class TaskList extends React.Component {
   }
 
   update(task) {
-    this.props.store.updateTask(task.id, {
-      complete: task.complete ? 0 : 1,
-      completedAt: !task.complete ? new Date().valueOf() : null
-    });
+    this.props.store.toggleComplete(task);
   }
 
   destroy(taskId) {

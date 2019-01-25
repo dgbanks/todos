@@ -5,8 +5,9 @@ import uuid from "uuid";
 import NavigationUtils from "./utils/navigationUtils";
 import {
   taskSchema,
-  parseUpdateTaskParams,
-  parseCreateTaskParams
+  taskWithSchedule,
+  parseUpdateParams,
+  parseCreateParams
 } from "./utils/taskUtils";
 
 class Store {
@@ -59,8 +60,23 @@ class Store {
 
   @computed get tasks() {
     return this.data.slice()
-    .filter(t => !(this.filter && t.complete))
-    .sort((a,b) => a.title < b.title ? -1 : 1);
+      .filter(t => !(this.filter && t.complete))
+      .sort((a,b) => a.title < b.title ? -1 : 1)
+      .map(t => t.schedule ? taskWithSchedule(t) : t);
+  }
+
+  @action fetchTask = id => {
+    this.database.transaction(tx => {
+      tx.executeSql(
+        "SELECT * FROM Tasks WHERE id = ?",
+        [id],
+        (_, { rows: { raw } }) => {
+          this.data = this.data.filter(t => t.id !== id).concat(raw());
+          this.discardTaskForm();
+        },
+        (_, err) => {debugger}
+      )
+    })
   }
 
   @action createTask = () => {
@@ -68,45 +84,34 @@ class Store {
       this.task.id = uuid();
       this.database.transaction(tx => {
         tx.executeSql(
-          `INSERT INTO Tasks VALUES ${parseCreateTaskParams(this.task)}`,
+          `INSERT INTO Tasks VALUES ${parseCreateParams(this.task)}`,
           [],
-          (_, res) => {
-            _.executeSql(
-              "SELECT * FROM Tasks WHERE id = ?",
-              [this.task.id],
-              (_, res) => {
-                this.data = this.data.concat(res.rows.raw());
-                this.discardTaskForm();
-              },
-              (_, err) => {debugger}
-            )
-          },
+          (_, res) => {this.fetchTask(this.task.id)},
           (_, err) => {debugger}
         )
-      })
+      });
     } else {
       this.error = true;
     }
   }
 
-  @action updateTask(taskId, params) {
+  @action toggleComplete = task => {
+    this.task = Object.assign({}, task, {
+      complete: task.complete ? 0 : 1,
+      completedAt: !task.complete ? new Date().valueOf() : null
+    });
+    this.updateTask();
+  }
+
+  @action updateTask = () => {
     this.database.transaction(tx => {
       tx.executeSql(
-        `UPDATE Tasks SET ${parseUpdateTaskParams(params)} WHERE id = ?`,
-        [taskId],
-        (_, res) => {
-          _.executeSql(
-            "SELECT * FROM Tasks WHERE id = ?",
-            [taskId],
-            (_, res) => {
-              this.data = this.data.filter(t => t.id !== taskId).concat(res.rows.raw());
-            },
-            (_, err) => {debugger}
-          );
-        },
+        `UPDATE Tasks SET ${parseUpdateParams(this.task)} WHERE id = ?`,
+        [this.task.id],
+        (_, res) => {this.fetchTask(this.task.id)},
         (_, err) => {debugger}
       )
-    })
+    });
   }
 
   @action deleteTask = taskId => {
@@ -124,7 +129,6 @@ class Store {
     if (this.schedule.days.length) {
       this.task.schedule = this.schedule;
       this.task.dueDate = null;
-      // dueDate nullify moved from component to store for improved UX
     }
     this.discardScheduleForm()
   }

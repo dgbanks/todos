@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "react-native";
+import { Button, Picker } from "react-native";
 import { Icon } from "react-native-elements";
 import {
   createAppContainer,

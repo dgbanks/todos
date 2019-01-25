@@ -11,6 +11,7 @@ export const taskSchema = `(${[
 
 export const taskWithSchedule = task => {
   const array = task.schedule.split(",");
+  debugger
   return Object.assign({}, task, {
     schedule: {
       [array[0]]: array[1],
@@ -19,21 +20,26 @@ export const taskWithSchedule = task => {
   });
 };
 
-export const parseUpdateParams = params => (
-  Object.entries(params).map(entry => (
+export const parseUpdateParams = params => {
+  debugger
+  const result = Object.entries(params).map(entry => (
     `${entry[0]} = ${
       [
         "complete",
         "completedAt",
         "dueDate"
       ].includes(entry[0]) ? `${entry[1]}` : `"${
-        entry[0] === "schedule" ? Object.entries(entry[1]) : entry[1]
+        (entry[0] === "schedule" && entry[1]) ? Object.entries(entry[1]) : entry[1] || ""
       }"`
     }`
-  )).join(", ")
-);
+  )).join(", ");
+  debugger;
+  return result;
+};
 
-export const parseCreateParams = params => `("${
+export const parseCreateParams = params => {
+  debugger
+  const result = `("${
     params.id // string
   }", "${
     params.title // string
@@ -50,3 +56,6 @@ export const parseCreateParams = params => `("${
   }, "${
     params.schedule ? `${Object.entries(params.schedule)}` : ""
 }")`;
+  debugger
+  return result;
+};

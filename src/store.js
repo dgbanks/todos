@@ -62,7 +62,16 @@ class Store {
     return this.data.slice()
       .filter(t => !(this.filter && t.complete))
       .sort((a,b) => a.title < b.title ? -1 : 1)
-      .map(t => t.schedule ? taskWithSchedule(t) : t);
+      .map(t => {
+        debugger
+        if (t.schedule && typeof t.schedule === "string") {
+          debugger
+          return taskWithSchedule(t)
+        } else {
+          return t
+        }
+        // t.schedule ? taskWithSchedule(t) : t
+      });
   }
 
   @action fetchTask = id => {
@@ -134,6 +143,7 @@ class Store {
   }
 
   @action discardTaskForm = () => {
+    debugger
     this.task = {};
     this.error = false;
     NavigationUtils.goBack();

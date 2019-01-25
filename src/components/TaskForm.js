@@ -25,14 +25,14 @@ class TaskForm extends React.Component {
       task.dueDate = null;
     } else {
       task.dueDate = new Date().valueOf();
-      task.schedule = null;
+      task.schedule = "";
     }
   }
 
   handleSchedule() {
     const { task } = this.props.store;
     if (task.schedule) {
-      task.schedule = null;
+      task.schedule = "";
     } else {
       // task.dueDate = null; moved to store
       this.props.navigation.navigate("ScheduleForm");

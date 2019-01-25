@@ -14,9 +14,16 @@ class TaskForm extends React.Component {
       props.store.task = task;
     }
 
+
+    this.handleChange = this.handleChange.bind(this);
     this.handleDueDate = this.handleDueDate.bind(this);
     this.handleSchedule = this.handleSchedule.bind(this);
     this.openScheduleForm = this.openScheduleForm.bind(this);
+  }
+
+  handleChange(d) {
+    const { task } = this.props.store;
+    task.dueDate = d.setHours(23,59,59,999).valueOf();
   }
 
   handleDueDate() {
@@ -24,7 +31,7 @@ class TaskForm extends React.Component {
     if (task.dueDate) {
       task.dueDate = null;
     } else {
-      task.dueDate = new Date().valueOf();
+      task.dueDate = new Date().setHours(23,59,59,999).valueOf();
       task.schedule = "";
     }
   }
@@ -84,7 +91,7 @@ class TaskForm extends React.Component {
                   mode="date"
                   date={new Date(task.dueDate)}
                   minimumDate={new Date()}
-                  onDateChange={d => task.dueDate = d.valueOf()}
+                  onDateChange={d => this.handleChange(d)}
                 />
               )
             }

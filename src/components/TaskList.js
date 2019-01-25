@@ -43,9 +43,9 @@ class TaskList extends React.Component {
     }
 
     return (
-      <View>
+      <View style={{ height:"100%" }}>
         <Listen onWillBlur={() => this.setState({ slidItem: false })} />
-        <ScrollView>
+        <ScrollView style={{ height:"100%" }}>
           {
             store.tasks.map((task, index) => (
               <TaskItem

@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { CheckBox, Icon } from "react-native-elements";
 import Interactable from "react-native-interactable";
 import posed from "react-native-pose";
-import { displayDate } from "../utils/timeUtils";
+import { displayDate, displaySchedule } from "../utils/timeUtils";
 
 export default class TaskItem extends React.Component {
   constructor(props) {
@@ -74,7 +74,7 @@ export default class TaskItem extends React.Component {
               title={<Title task={task} style={detailStyles} />}
               checked={Boolean(task.complete)}
               checkedIcon="check-square"
-              checkedColor="lightblue"
+              checkedColor="dodgerblue"
               onPress={() => this.onClick(navigate)}
               onIconPress={() => this.onClick(toggleComplete)}
               onLongPress={() => navigate("TaskForm")}
@@ -87,16 +87,13 @@ export default class TaskItem extends React.Component {
   }
 }
 
-const Title = ({task: { title, complete, dueDate }, style }) => (
+const Title = ({task: { title, complete, dueDate, schedule }, style }) => (
   <View style={{ flex:1, marginLeft: complete ? 13.25 : 15 }}>
     <Text style={{fontWeight:"500"}}>{title}</Text>
-    {
-      dueDate && (
-        <Text style={style}>
-          {displayDate(dueDate)}
-        </Text>
-      )
-    }
+    <Text style={style}>
+      {dueDate && displayDate(dueDate)}
+      {schedule && displaySchedule(schedule)}
+    </Text>
 </View>
 );
 
@@ -127,7 +124,9 @@ const styles = StyleSheet.create({
     height:50,
     backgroundColor:"white",
     position:"relative",
-    alignItems:"center"
+    alignItems:"center",
+    borderWidth:0,
+    borderBottomWidth:1
   },
   button: {
     backgroundColor:"red",

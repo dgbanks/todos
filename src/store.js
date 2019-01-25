@@ -5,7 +5,7 @@ import uuid from "uuid";
 import NavigationUtils from "./utils/navigationUtils";
 import {
   taskSchema,
-  taskWithSchedule,
+  parseSchedule,
   parseUpdateParams,
   parseCreateParams
 } from "./utils/taskUtils";
@@ -33,9 +33,16 @@ class Store {
               [],
               (_, res) => {
                 const today = moment().startOf("day");
+                // const data = 
                 this.data = res.rows.raw().filter(t => (
                   !t.complete || (t.complete && t.completedAt > today)
-                ));
+                )).map(t => {
+                  if (t.schedule) {
+                    return Object.assign({}, t, { schedule: parseSchedule(t.schedule) });
+                  } else {
+                    return t;
+                  }
+                });
                 this.fetching = false;
                 // delete day old completed tasks
                 res.rows.raw().filter(t => (
@@ -60,18 +67,8 @@ class Store {
 
   @computed get tasks() {
     return this.data.slice()
-      .filter(t => !(this.filter && t.complete))
-      .sort((a,b) => a.title < b.title ? -1 : 1)
-      .map(t => {
-        debugger
-        if (t.schedule && typeof t.schedule === "string") {
-          debugger
-          return taskWithSchedule(t)
-        } else {
-          return t
-        }
-        // t.schedule ? taskWithSchedule(t) : t
-      });
+    .filter(t => !(this.filter && t.complete))
+    .sort((a,b) => a.title < b.title ? -1 : 1);
   }
 
   @action fetchTask = id => {
@@ -80,7 +77,15 @@ class Store {
         "SELECT * FROM Tasks WHERE id = ?",
         [id],
         (_, { rows: { raw } }) => {
-          this.data = this.data.filter(t => t.id !== id).concat(raw());
+          this.data = this.data.filter(t => t.id !== id).concat(
+            raw().map(t => {
+              if (t.schedule) {
+                return Object.assign({}, t, { schedule: parseSchedule(t.schedule) });
+              } else {
+                return t;
+              }
+            })
+          );
           this.discardTaskForm();
         },
         (_, err) => {debugger}
@@ -143,7 +148,6 @@ class Store {
   }
 
   @action discardTaskForm = () => {
-    debugger
     this.task = {};
     this.error = false;
     NavigationUtils.goBack();

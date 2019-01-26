@@ -19,7 +19,7 @@ class DatesOfMonth extends React.Component {
     if (schedule.days.includes(date)) {
       schedule.days = schedule.days.filter(d => d !== date);
     } else {
-      schedule.days = [...schedule.days, date];
+      schedule.days = [...schedule.days, date].sort((a,b) => a < b ? -1 : 1);
     }
   }
 
@@ -30,18 +30,18 @@ class DatesOfMonth extends React.Component {
       <View style={container}>
         {
           this.datesOfMonth.map(num => (
-            <TouchableOpacity style={date} onPress={() => this.selectDate(num)}>
+            <TouchableOpacity style={date} onPress={() => this.selectDate(num + 1)}>
               <Text style={text}>{num + 1}</Text>
               <Icon name="check" containerStyle={icon}
-                color={days.includes(num) ? "dodgerblue" : "transparent"}
+                color={days.includes(num + 1) ? "dodgerblue" : "transparent"}
               />
             </TouchableOpacity>
           ))
         }
-        <TouchableOpacity style={last} onPress={() => this.selectDate("last")}>
+        <TouchableOpacity style={last} onPress={() => this.selectDate(0)}>
           <Text style={text}>Last of Month</Text>
           <Icon name="check" containerStyle={icon}
-            color={days.includes("last") ? "dodgerblue" : "transparent"}
+            color={days.includes(0) ? "dodgerblue" : "transparent"}
           />
         </TouchableOpacity>
       </View>

@@ -12,8 +12,8 @@ export const taskSchema = `(${[
 export const parseSchedule = schedule => {
   const array = schedule.split(",");
   return {
-      [array[0]]: array[1],
-      [array[2]]: array.slice(3).map(n => parseInt(n))
+    [array[0]]: array[1],
+    [array[2]]: array.slice(3).map(n => parseInt(n))
   };
 };
 

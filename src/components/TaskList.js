@@ -4,6 +4,7 @@ import { View, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
 import { Icon } from "react-native-elements";
 import { NavigationEvents as Listen } from "react-navigation";
 import TaskItem from "./TaskItem";
+import DateRangeTab from "./ui/DateRangeTab";
 
 class TaskList extends React.Component {
   constructor(props) {
@@ -15,9 +16,9 @@ class TaskList extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.navigation.state.params.hide) {
-      this.props.store.filter = true;
+      this.props.uiStore.filter = true;
     } else {
-      this.props.store.filter = false;
+      this.props.uiStore.filter = false;
     }
   }
 
@@ -46,6 +47,7 @@ class TaskList extends React.Component {
       <View style={{ height:"100%" }}>
         <Listen onWillBlur={() => this.setState({ slidItem: false })} />
         <ScrollView style={{ height:"100%" }}>
+          <DateRangeTab title="today" />
           {
             store.tasks.map((task, index) => (
               <TaskItem
@@ -66,7 +68,7 @@ class TaskList extends React.Component {
   }
 }
 
-export default inject("store")(observer(TaskList));
+export default inject("store", "uiStore")(observer(TaskList));
 
 const styles = StyleSheet.create({
   loading: {

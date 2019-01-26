@@ -3,6 +3,7 @@ import SQLite from "react-native-sqlite-storage";
 import moment from "moment";
 import uuid from "uuid";
 import NavigationUtils from "./utils/navigationUtils";
+import UIStore from "./uiStore";
 import {
   taskSchema,
   parseSchedule,
@@ -33,27 +34,26 @@ class Store {
               [],
               (_, res) => {
                 const today = moment().startOf("day");
-                // const data = 
-                this.data = res.rows.raw().filter(t => (
-                  !t.complete || (t.complete && t.completedAt > today)
-                )).map(t => {
-                  if (t.schedule) {
-                    return Object.assign({}, t, { schedule: parseSchedule(t.schedule) });
-                  } else {
-                    return t;
+                const data = res.rows.raw().reduce((object, task) => {
+                  const { complete, completedAt } = task;
+                  if (!complete || (complete && completedAt > today)) {
+                    object.yes = [...object.yes, task];
+                  } else if (completedAt && completedAt < today) {
+                    object.no = [...object.no, task];
                   }
-                });
+                  return object;
+                }, { yes: [], no: [] });
+
+                this.data = this.formatTasks(data.yes);
                 this.fetching = false;
-                // delete day old completed tasks
-                res.rows.raw().filter(t => (
-                  t.completedAt && t.completedAt < today
-                )).each(t => {
+                // debugger
+                data.no.each(task => { // delete day old completed tasks
                   _.executeSql(
                     "DELETE FROM Tasks WHERE id = ?",
-                    [t.id],
+                    [task.id],
                     (_, res) => {},
                     (_, err) => {debugger}
-                  );
+                  )
                 });
               },
               (_, err) => {debugger}
@@ -66,9 +66,19 @@ class Store {
   }
 
   @computed get tasks() {
-    return this.data.slice()
+    return UIStore.filteredTasks.slice()
     .filter(t => !(this.filter && t.complete))
-    .sort((a,b) => a.title < b.title ? -1 : 1);
+    .sort((a,b) => a.dueDate < b.dueDate ? -1 : 1);
+    // return this.data.slice()
+    // .filter(t => !(this.filter && t.complete))
+    // .sort((a,b) => a.dueDate < b.dueDate ? -1 : 1);
+  }
+
+  @action formatTasks(tasks) {
+    return tasks.map(task => {
+      const schedule = task.schedule ? parseSchedule(task.schedule) : "";
+      return Object.assign({}, task, { schedule });
+    });
   }
 
   @action fetchTask = id => {
@@ -77,15 +87,9 @@ class Store {
         "SELECT * FROM Tasks WHERE id = ?",
         [id],
         (_, { rows: { raw } }) => {
-          this.data = this.data.filter(t => t.id !== id).concat(
-            raw().map(t => {
-              if (t.schedule) {
-                return Object.assign({}, t, { schedule: parseSchedule(t.schedule) });
-              } else {
-                return t;
-              }
-            })
-          );
+          this.data = this.data
+          .filter(t => t.id !== id)
+          .concat(this.formatTasks(raw()));
           this.discardTaskForm();
         },
         (_, err) => {debugger}
@@ -118,14 +122,18 @@ class Store {
   }
 
   @action updateTask = () => {
-    this.database.transaction(tx => {
-      tx.executeSql(
-        `UPDATE Tasks SET ${parseUpdateParams(this.task)} WHERE id = ?`,
-        [this.task.id],
-        (_, res) => {this.fetchTask(this.task.id)},
-        (_, err) => {debugger}
-      )
-    });
+    if (this.task.title) {
+      this.database.transaction(tx => {
+        tx.executeSql(
+          `UPDATE Tasks SET ${parseUpdateParams(this.task)} WHERE id = ?`,
+          [this.task.id],
+          (_, res) => {this.fetchTask(this.task.id)},
+          (_, err) => {debugger}
+        )
+      });
+    } else {
+      this.error = true;
+    }
   }
 
   @action deleteTask = taskId => {

@@ -45,6 +45,7 @@ class Store {
                 }, { yes: [], no: [] });
 
                 this.data = this.formatTasks(data.yes);
+                debugger
                 this.fetching = false;
                 // debugger
                 data.no.each(task => { // delete day old completed tasks
@@ -69,16 +70,27 @@ class Store {
     return UIStore.filteredTasks.slice()
     .filter(t => !(this.filter && t.complete))
     .sort((a,b) => a.dueDate < b.dueDate ? -1 : 1);
-    // return this.data.slice()
-    // .filter(t => !(this.filter && t.complete))
-    // .sort((a,b) => a.dueDate < b.dueDate ? -1 : 1);
   }
 
   @action formatTasks(tasks) {
     return tasks.map(task => {
       const schedule = task.schedule ? parseSchedule(task.schedule) : "";
-      return Object.assign({}, task, { schedule });
-    });
+      // let occurence;
+      if (schedule) {
+        const occurences = [];
+        for (var i = 0; i < 7; i++) {
+          const date = new Date().setDate(new Date().getDate() + i);
+          if (schedule.days.includes(new Date(date).getDay())) {
+            occurences.push(new Date(date).setHours(23,59,59,999).valueOf());
+          }
+        }
+        return occurences.map(occurence => (
+          Object.assign({}, task, { schedule, occurence })
+        ));
+      } else {
+        return Object.assign({}, task, { schedule });
+      }
+    }).flat();
   }
 
   @action fetchTask = id => {

@@ -87,12 +87,12 @@ export default class TaskItem extends React.Component {
   }
 }
 
-const Title = ({task: { title, complete, dueDate, schedule }, style }) => (
+const Title = ({task: { title, complete, dueDate, schedule, occurence }, style }) => (
   <View style={{ flex:1, marginLeft: complete ? 13.25 : 15 }}>
     <Text style={{fontWeight:"500"}}>{title}</Text>
     <Text style={style}>
-      {dueDate && displayDate(dueDate)}
-      {schedule && displaySchedule(schedule)}
+      {(dueDate || occurence) && displayDate(dueDate || occurence)}
+      {(schedule && !occurence) && displaySchedule(schedule)}
     </Text>
 </View>
 );

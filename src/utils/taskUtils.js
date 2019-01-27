@@ -1,4 +1,4 @@
-export const taskSchema = `(${[
+const schema = `(${[
   "id",
   "title",
   "content",
@@ -9,7 +9,7 @@ export const taskSchema = `(${[
   "schedule"
 ].join(", ")})`;
 
-export const parseSchedule = schedule => {
+const parseSchedule = schedule => {
   const array = schedule.split(",");
   return {
     [array[0]]: array[1],
@@ -17,22 +17,23 @@ export const parseSchedule = schedule => {
   };
 };
 
-export const parseUpdateParams = params => (
+const updateParams = params => (
   Object.entries(params).map(entry => (
     `${entry[0]} = ${
-      [
-        "complete",
-        "completedAt",
-        "dueDate"
-      ].includes(entry[0]) ? `${entry[1]}` : `"${
-        (entry[0] === "schedule" && entry[1]) ?
-        Object.entries(entry[1]) : entry[1]
-      }"`
+      (["complete", "completedAt", "dueDate"].includes(entry[0])) ? (
+        `${entry[1]}`
+      ) : (
+        entry[0] === "schedule" ? (
+          `"${Object.entries(entry[1])}"`
+        ) : (
+          `"${entry[1]}"`
+        )
+      )
     }`
   )).join(", ")
 );
 
-export const parseCreateParams = params => `("${
+const createParams = params => `("${
     params.id // string
   }", "${
     params.title // string
@@ -49,3 +50,5 @@ export const parseCreateParams = params => `("${
   }, "${
     params.schedule ? `${Object.entries(params.schedule)}` : ""
 }")`;
+
+export default { schema, parseSchedule, updateParams, createParams };

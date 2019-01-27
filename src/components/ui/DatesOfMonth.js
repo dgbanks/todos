@@ -15,7 +15,7 @@ class DatesOfMonth extends React.Component {
   }
 
   selectDate(date) {
-    const { store: { schedule } } = this.props;
+    const { dataStore: { schedule } } = this.props;
     if (schedule.days.includes(date)) {
       schedule.days = schedule.days.filter(d => d !== date);
     } else {
@@ -24,7 +24,7 @@ class DatesOfMonth extends React.Component {
   }
 
   render() {
-    const { store: { schedule: { days } } } = this.props;
+    const { dataStore: { schedule: { days } } } = this.props;
     const { container, date, text, icon, last } = styles;
     return (
       <View style={container}>
@@ -49,7 +49,7 @@ class DatesOfMonth extends React.Component {
   }
 }
 
-export default inject("store")(observer(DatesOfMonth));
+export default inject("dataStore")(observer(DatesOfMonth));
 
 const styles = StyleSheet.create({
   container: {

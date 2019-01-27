@@ -20,7 +20,7 @@ class DaysOfWeek extends React.Component {
   }
 
   selectDay(day) {
-    const { store: { schedule } } = this.props;
+    const { dataStore: { schedule } } = this.props;
     if (schedule.days.includes(day)) {
       schedule.days = schedule.days.filter(d => d !== day);
     } else {
@@ -29,7 +29,7 @@ class DaysOfWeek extends React.Component {
   }
 
   selectEveryDay() {
-    const { store: { schedule } } = this.props;
+    const { dataStore: { schedule } } = this.props;
     if (schedule.days.length === 7) {
       schedule.days = [];
     } else {
@@ -38,7 +38,7 @@ class DaysOfWeek extends React.Component {
   }
 
   render() {
-    const { store: { schedule: { days } } } = this.props;
+    const { dataStore: { schedule: { days } } } = this.props;
     const { itemWrapper, lastItemWrapper, item, itemText } = styles;
     return (
       <View style={{ alignItems:"center" }}>
@@ -74,7 +74,7 @@ class DaysOfWeek extends React.Component {
   }
 }
 
-export default inject("store")(observer(DaysOfWeek));
+export default inject("dataStore")(observer(DaysOfWeek));
 
 const styles = StyleSheet.create({
   itemWrapper: {

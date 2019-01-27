@@ -4,12 +4,7 @@ import moment from "moment";
 import uuid from "uuid";
 import NavigationUtils from "../utils/navigationUtils";
 import uiStore from "./uiStore";
-import {
-  taskSchema,
-  parseSchedule,
-  parseUpdateParams,
-  parseCreateParams
-} from "../utils/taskUtils";
+import Utils from "../utils/taskUtils";
 
 class DataStore {
   @observable database = {};
@@ -26,7 +21,7 @@ class DataStore {
       this.database = db;
       db.transaction(tx => {
         tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS Tasks ${taskSchema}`,
+          `CREATE TABLE IF NOT EXISTS Tasks ${Utils.schema}`,
           [],
           (_, res) => {
             _.executeSql(
@@ -72,7 +67,7 @@ class DataStore {
 
   @action formatTasks(tasks) {
     return tasks.map(task => {
-      const schedule = task.schedule ? parseSchedule(task.schedule) : "";
+      const schedule = task.schedule ? Utils.parseSchedule(task.schedule) : "";
       // let occurence;
       if (schedule) {
         const occurences = [];
@@ -112,7 +107,7 @@ class DataStore {
       this.task.id = uuid();
       this.database.transaction(tx => {
         tx.executeSql(
-          `INSERT INTO Tasks VALUES ${parseCreateParams(this.task)}`,
+          `INSERT INTO Tasks VALUES ${Utils.createParams(this.task)}`,
           [],
           (_, res) => {this.fetchTask(this.task.id)},
           (_, err) => {debugger}
@@ -135,7 +130,7 @@ class DataStore {
     if (this.task.title) {
       this.database.transaction(tx => {
         tx.executeSql(
-          `UPDATE Tasks SET ${parseUpdateParams(this.task)} WHERE id = ?`,
+          `UPDATE Tasks SET ${Utils.updateParams(this.task)} WHERE id = ?`,
           [this.task.id],
           (_, res) => {this.fetchTask(this.task.id)},
           (_, err) => {debugger}

@@ -23,19 +23,19 @@ class TaskList extends React.Component {
   }
 
   update(task) {
-    this.props.store.toggleComplete(task);
+    this.props.dataStore.toggleComplete(task);
   }
 
   destroy(taskId) {
     this.setState({ slidItem: false });
-    this.props.store.deleteTask(taskId);
+    this.props.dataStore.deleteTask(taskId);
   }
 
   render() {
-    const { store, navigation } = this.props;
+    const { dataStore, navigation } = this.props;
     const { slidItem } = this.state;
 
-    if (store.fetching) {
+    if (dataStore.fetching) {
       return (
         <View style={styles.loading}>
           <ActivityIndicator size="large" />
@@ -49,7 +49,7 @@ class TaskList extends React.Component {
         <ScrollView style={{ height:"100%" }}>
           <DateRangeTab title="today" />
           {
-            store.tasks.map((task, index) => (
+            dataStore.tasks.map((task, index) => (
               <TaskItem
                 key={task.id}
                 task={task}
@@ -68,7 +68,7 @@ class TaskList extends React.Component {
   }
 }
 
-export default inject("store", "uiStore")(observer(TaskList));
+export default inject("dataStore", "uiStore")(observer(TaskList));
 
 const styles = StyleSheet.create({
   loading: {

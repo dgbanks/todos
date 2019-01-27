@@ -11,7 +11,7 @@ class TaskForm extends React.Component {
     super(props);
     const { navigation: { state: { params: { task } } } } = props;
     if (task) {
-      props.store.task = task;
+      props.dataStore.task = task;
     }
 
 
@@ -22,12 +22,12 @@ class TaskForm extends React.Component {
   }
 
   handleChange(d) {
-    const { task } = this.props.store;
+    const { task } = this.props.dataStore;
     task.dueDate = d.setHours(23,59,59,999).valueOf();
   }
 
   handleDueDate() {
-    const { task } = this.props.store;
+    const { task } = this.props.dataStore;
     if (task.dueDate) {
       task.dueDate = null;
     } else {
@@ -37,25 +37,25 @@ class TaskForm extends React.Component {
   }
 
   handleSchedule() {
-    const { task } = this.props.store;
+    const { task } = this.props.dataStore;
     if (task.schedule) {
       task.schedule = "";
     } else {
-      // task.dueDate = null; moved to store
+      // task.dueDate = null; moved to dataStore
       this.props.navigation.navigate("ScheduleForm");
     }
   }
 
   openScheduleForm() {
-    const { task } = this.props.store;
+    const { task } = this.props.dataStore;
     if (task.schedule) {
-      this.props.store.schedule = task.schedule;
+      this.props.dataStore.schedule = task.schedule;
     }
     this.props.navigation.navigate("ScheduleForm");
   }
 
   render() {
-    const { task, task: { schedule }, error } = this.props.store;
+    const { task, task: { schedule }, error } = this.props.dataStore;
     const { toggledFieldContainer, valueText, wrapper, text } = styles;
 
     return (
@@ -110,7 +110,7 @@ class TaskForm extends React.Component {
   }
 }
 
-export default inject("store")(observer(TaskForm));
+export default inject("dataStore", "uiStore")(observer(TaskForm));
 
 const DatePickerWrapper = posed(View)({
   hide: { height:0 },

@@ -1,13 +1,14 @@
 import { observable, action, computed } from "mobx";
 import moment from "moment";
-import Store from "./store";
+import dataStore from "./dataStore";
 
 class UIStore {
+  @observable activeItem = ""
   @observable filter = false
   @observable range = 7
 
   @computed get filteredTasks() {
-    return Store.data.filter(t => !(this.filter && t.complete))
+    return dataStore.data.filter(t => !(this.filter && t.complete))
   }
 }
 

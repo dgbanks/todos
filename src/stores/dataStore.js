@@ -2,16 +2,16 @@ import { observable, action, computed } from "mobx";
 import SQLite from "react-native-sqlite-storage";
 import moment from "moment";
 import uuid from "uuid";
-import NavigationUtils from "./utils/navigationUtils";
-import UIStore from "./uiStore";
+import NavigationUtils from "../utils/navigationUtils";
+import uiStore from "./uiStore";
 import {
   taskSchema,
   parseSchedule,
   parseUpdateParams,
   parseCreateParams
-} from "./utils/taskUtils";
+} from "../utils/taskUtils";
 
-class Store {
+class DataStore {
   @observable database = {};
   @observable data = [];
   @observable fetching = true;
@@ -45,9 +45,7 @@ class Store {
                 }, { yes: [], no: [] });
 
                 this.data = this.formatTasks(data.yes);
-                debugger
                 this.fetching = false;
-                // debugger
                 data.no.each(task => { // delete day old completed tasks
                   _.executeSql(
                     "DELETE FROM Tasks WHERE id = ?",
@@ -67,7 +65,7 @@ class Store {
   }
 
   @computed get tasks() {
-    return UIStore.filteredTasks.slice()
+    return uiStore.filteredTasks.slice()
     .filter(t => !(this.filter && t.complete))
     .sort((a,b) => a.dueDate < b.dueDate ? -1 : 1);
   }
@@ -180,4 +178,4 @@ class Store {
   }
 }
 
-export default new Store();
+export default new DataStore();

@@ -13,7 +13,7 @@ class ScheduleForm extends React.Component {
   }
 
   toggleBasis(index) {
-    const { store: { schedule } } = this.props;
+    const { dataStore: { schedule } } = this.props;
     if (index === 0 && schedule.basis === "monthly") {
       schedule.basis = "weekly";
       schedule.days = [];
@@ -25,7 +25,7 @@ class ScheduleForm extends React.Component {
   }
 
   render() {
-    const { store: { schedule: { basis, days } } } = this.props;
+    const { dataStore: { schedule: { basis, days } } } = this.props;
     return (
       <View>
         <ButtonGroup
@@ -42,4 +42,4 @@ class ScheduleForm extends React.Component {
   }
 }
 
-export default inject("store")(observer(ScheduleForm));
+export default inject("dataStore")(observer(ScheduleForm));

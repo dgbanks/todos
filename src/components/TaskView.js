@@ -24,7 +24,7 @@ class TaskView extends React.Component {
   }
 }
 
-export default inject("store")(observer(TaskView));
+export default inject("dataStore", "uiStore")(observer(TaskView));
 
 const styles = StyleSheet.create({
   attribute: {

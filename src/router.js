@@ -10,7 +10,8 @@ import TaskList from "./components/TaskList";
 import TaskView from "./components/TaskView";
 import TaskForm from "./components/TaskForm";
 import ScheduleForm from "./components/ScheduleForm";
-import Store from "./store";
+import dataStore from "./stores/dataStore";
+import uiStore from "./stores/uiStore";
 
 const Navigator = createStackNavigator({
   TaskList: {
@@ -125,15 +126,15 @@ Navigator.router.getStateForAction = (action, state) => {
   let params = action.params || {};
   if (action.routeName === "TaskForm") {
     const storeParams = {
-      saveTask: params.task ? Store.updateTask : Store.createTask,
-      closeForm: Store.discardTaskForm
+      saveTask: params.task ? dataStore.updateTask : dataStore.createTask,
+      closeForm: dataStore.discardTaskForm
     };
     params = Object.assign({}, params, storeParams);
   }
   if (action.routeName === "ScheduleForm") {
     const storeParams = {
-      saveSchedule: Store.saveSchedule,
-      closeForm: Store.discardScheduleForm
+      saveSchedule: dataStore.saveSchedule,
+      closeForm: dataStore.discardScheduleForm
     };
     params = Object.assign({}, params, storeParams);
   }

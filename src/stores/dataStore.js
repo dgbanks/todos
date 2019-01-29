@@ -68,7 +68,6 @@ class DataStore {
   @action formatTasks(tasks) {
     return tasks.map(task => {
       const schedule = task.schedule ? Utils.parseSchedule(task.schedule) : "";
-      // let occurence;
       if (schedule) {
         const occurences = [];
         for (var i = 0; i < 7; i++) {

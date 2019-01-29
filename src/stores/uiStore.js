@@ -10,6 +10,18 @@ class UIStore {
   @computed get filteredTasks() {
     return dataStore.data.filter(t => !(this.filter && t.complete))
   }
+
+  @action toggleFilter = () => {
+    this.filter = !this.filter;
+  }
+
+  @action activateItem = () => {
+
+  }
+
+  @action deactivateItem = () => {
+    this.activeItem = ""
+  }
 }
 
 export default new UIStore();

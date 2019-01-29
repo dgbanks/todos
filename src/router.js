@@ -16,16 +16,15 @@ import uiStore from "./stores/uiStore";
 const Navigator = createStackNavigator({
   TaskList: {
     screen: TaskList,
-    navigationOptions: ({ navigation }) => {
-      const { getParam, setParams, navigate } = navigation;
+    navigationOptions: ({ navigation: { navigate, state } }) => {
       return {
         headerTitle: "Tasks",
         headerLeft: (
           <Icon
             name="filter-list"
-            onPress={() => setParams({ hide: !getParam("hide", false) })}
+            onPress={() => state.params.toggleFilter}
             iconStyle={{ marginLeft:20, fontWeight:"bold" }}
-            color={getParam("hide", false) ? "dodgerblue" : "#a4a4a4"}
+            color={state.params.filter ? "dodgerblue" : "#a4a4a4"}
           />
         ),
         headerRight: (
@@ -124,20 +123,29 @@ const getStateForAction = Navigator.router.getStateForAction;
 
 Navigator.router.getStateForAction = (action, state) => {
   let params = action.params || {};
-  if (action.routeName === "TaskForm") {
-    const storeParams = {
-      saveTask: params.task ? dataStore.updateTask : dataStore.createTask,
-      closeForm: dataStore.discardTaskForm
-    };
-    params = Object.assign({}, params, storeParams);
+  let storeParams = {};
+  switch (action.routeName) {
+    case "TaskList": {
+      storeParams = {
+        filter: uiStore.filter,
+        toggleFilter: uiStore.toggleFilter,
+      };
+    }
+    case "TaskForm": {
+      storeParams = {
+        saveTask: params.task ? dataStore.updateTask : dataStore.createTask,
+        closeForm: dataStore.discardTaskForm
+      };
+    }
+    case "ScheduleForm": {
+      storeParams = {
+        saveSchedule: dataStore.saveSchedule,
+        closeForm: dataStore.discardScheduleForm
+      };
+    }
   }
-  if (action.routeName === "ScheduleForm") {
-    const storeParams = {
-      saveSchedule: dataStore.saveSchedule,
-      closeForm: dataStore.discardScheduleForm
-    };
-    params = Object.assign({}, params, storeParams);
-  }
+
+  params = Object.assign({}, params, storeParams);
   return getStateForAction(Object.assign({}, action, { params }), state);
 };
 

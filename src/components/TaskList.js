@@ -14,14 +14,6 @@ class TaskList extends React.Component {
     this.destroy = this.destroy.bind(this);
   }
 
-  componentWillReceiveProps(newProps) {
-    if (newProps.navigation.state.params.hide) {
-      this.props.uiStore.filter = true;
-    } else {
-      this.props.uiStore.filter = false;
-    }
-  }
-
   update(task) {
     this.props.dataStore.toggleComplete(task);
   }
@@ -32,7 +24,7 @@ class TaskList extends React.Component {
   }
 
   render() {
-    const { dataStore, navigation } = this.props;
+    const { dataStore, uiStore, navigation } = this.props;
     const { slidItem } = this.state;
 
     if (dataStore.fetching) {

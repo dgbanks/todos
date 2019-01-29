@@ -1,11 +1,12 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { CheckBox, Icon } from "react-native-elements";
 import Interactable from "react-native-interactable";
 import posed from "react-native-pose";
 import { displayDate, displaySchedule } from "../utils/timeUtils";
 
-export default class TaskItem extends React.Component {
+class TaskItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -86,6 +87,8 @@ export default class TaskItem extends React.Component {
     );
   }
 }
+
+export default inject("uiStore")(observer(TaskItem));
 
 const Title = ({task: { title, complete, dueDate, schedule, occurence }, style }) => (
   <View style={{ flex:1, marginLeft: complete ? 13.25 : 15 }}>

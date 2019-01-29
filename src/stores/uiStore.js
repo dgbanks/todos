@@ -3,7 +3,7 @@ import moment from "moment";
 import dataStore from "./dataStore";
 
 class UIStore {
-  @observable activeItem = ""
+  @observable activeItem = null
   @observable filter = false
   @observable range = 7
 
@@ -15,12 +15,15 @@ class UIStore {
     this.filter = !this.filter;
   }
 
-  @action activateItem = () => {
-
+  @action activateItem = node => {
+    this.activeItem = node;
   }
 
   @action deactivateItem = () => {
-    this.activeItem = ""
+    if (this.activeItem) {
+      this.activeItem.snapTo({ index: 0 })
+      this.activeItem = null
+    }
   }
 }
 

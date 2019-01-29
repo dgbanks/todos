@@ -25,25 +25,29 @@ class TaskItem extends React.Component {
   }
 
   snap({ nativeEvent: { state, x, targetSnapPointId } }) {
+    const { uiStore } = this.props;
     if (state === "start" && x === 0) {
-      this.setState({ show: true });
-      this.props.pingList();
+      uiStore.activateItem(this.checkboxWrapper)
+      // this.setState({ show: true });
+      // this.props.pingList();
     }
     if (state === "end" && targetSnapPointId === "closed") {
-      this.setState({ show: false });
-      this.props.pingList();
+      uiStore.deactivateItem();
+      // this.setState({ show: false });
+      // this.props.pingList();
     }
   }
 
   forceUnsnap() {
-    this.checkboxWrapper.snapTo({ index: 0 });
-    this.setState({ show: false });
+    this.props.uiStore.deactivateItem();
+    // this.checkboxWrapper.snapTo({ index: 0 });
+    // this.setState({ show: false });
   }
 
   onClick(action) {
-    if (this.props.slidItem) {
+    if (this.props.uiStore.activeItem) {
       this.forceUnsnap();
-      this.props.pingList();
+      // this.props.pingList();
     } else { // navigate("TaskView"); toggleComplete() takes nothing
       action("TaskView");
     }
@@ -51,7 +55,7 @@ class TaskItem extends React.Component {
 
   render() {
     const { show, pastDue } = this.state;
-    const { task, toggleComplete, destroy, navigate } = this.props;
+    const { task, toggleComplete, destroy, navigate, uiStore: { activeItem } } = this.props;
     const { container, button, checkbox, details } = styles;
     const detailStyles = Object.assign({}, details, {
       color: pastDue ? "red" : "dodgerblue"
@@ -59,7 +63,7 @@ class TaskItem extends React.Component {
 
     return (
       <View style={container}>
-        <Button onPress={destroy} pose={show ? "show" : "hide"} style={button}>
+        <Button onPress={destroy} pose={Boolean(activeItem) ? "show" : "hide"} style={button}>
           <Icon name="delete" color="white" />
         </Button>
         <Interactable.View

@@ -19,8 +19,10 @@ class TaskList extends React.Component {
   }
 
   destroy(taskId) {
-    this.setState({ slidItem: false });
-    this.props.dataStore.deleteTask(taskId);
+    const { dataStore, uiStore } = this.props;
+    // this.setState({ slidItem: false });
+    uiStore.deactivateItem();
+    dataStore.deleteTask(taskId);
   }
 
   render() {
@@ -37,7 +39,10 @@ class TaskList extends React.Component {
 
     return (
       <View style={{ height:"100%" }}>
-        <Listen onWillBlur={() => this.setState({ slidItem: false })} />
+        <Listen onWillBlur={
+            () => uiStore.deactivateItem()
+            // () => this.setState({ slidItem: false })
+          } />
         <ScrollView style={{ height:"100%" }}>
           <DateRangeTab title="today" />
           {

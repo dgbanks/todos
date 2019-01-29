@@ -130,18 +130,21 @@ Navigator.router.getStateForAction = (action, state) => {
         filter: uiStore.filter,
         toggleFilter: uiStore.toggleFilter,
       };
+      break;
     }
     case "TaskForm": {
       storeParams = {
         saveTask: params.task ? dataStore.updateTask : dataStore.createTask,
         closeForm: dataStore.discardTaskForm
       };
+      break;
     }
     case "ScheduleForm": {
       storeParams = {
         saveSchedule: dataStore.saveSchedule,
         closeForm: dataStore.discardScheduleForm
       };
+      break;
     }
   }
 

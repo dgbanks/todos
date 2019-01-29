@@ -10,44 +10,26 @@ class TaskItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: false,
+      // show: false,
       pastDue: props.task.dueDate < new Date().valueOf()
     };
     this.snap = this.snap.bind(this);
-    this.forceUnsnap = this.forceUnsnap.bind(this);
     this.onClick = this.onClick.bind(this);
-  }
-
-  componentWillReceiveProps(newProps) {
-    if (!newProps.slidItem && this.state.show) {
-      this.forceUnsnap();
-    }
   }
 
   snap({ nativeEvent: { state, x, targetSnapPointId } }) {
     const { uiStore } = this.props;
     if (state === "start" && x === 0) {
       uiStore.activateItem(this.checkboxWrapper)
-      // this.setState({ show: true });
-      // this.props.pingList();
     }
     if (state === "end" && targetSnapPointId === "closed") {
       uiStore.deactivateItem();
-      // this.setState({ show: false });
-      // this.props.pingList();
     }
-  }
-
-  forceUnsnap() {
-    this.props.uiStore.deactivateItem();
-    // this.checkboxWrapper.snapTo({ index: 0 });
-    // this.setState({ show: false });
   }
 
   onClick(action) {
     if (this.props.uiStore.activeItem) {
-      this.forceUnsnap();
-      // this.props.pingList();
+      this.props.uiStore.deactivateItem();
     } else { // navigate("TaskView"); toggleComplete() takes nothing
       action("TaskView");
     }

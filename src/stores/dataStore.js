@@ -62,7 +62,13 @@ class DataStore {
   @computed get tasks() {
     return uiStore.filteredTasks.slice()
     .filter(t => !(this.filter && t.complete))
-    .sort((a,b) => a.dueDate < b.dueDate ? -1 : 1);
+    .sort((a,b) => {
+      if (a.dueDate === b.dueDate) {
+        return a.title < b.title ? -1 : 1;
+      } else {
+        return a.dueDate < b.dueDate ? -1 : 1;
+      }
+    });
   }
 
   @action formatTasks(tasks) {

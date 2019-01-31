@@ -18,6 +18,10 @@ function ordinalize(date) {
   }
 }
 
+export const formatDate = date => (
+  new Date(date).setHours(23, 59, 59, 999).valueOf()
+);
+
 export const displayDate = date => {
   if (moment().diff(moment(date), "days") === 0) {
     return "Today";

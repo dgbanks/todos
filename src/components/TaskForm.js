@@ -4,7 +4,7 @@ import { View, ScrollView, DatePickerIOS, StyleSheet } from "react-native";
 import { FormLabel, FormInput } from "react-native-elements";
 import posed from "react-native-pose";
 import Checkbox from "./ui/Checkbox";
-import { displayDate, displaySchedule } from "../utils/timeUtils";
+import { formatDate, displayDate, displaySchedule } from "../utils/timeUtils";
 
 class TaskForm extends React.Component {
   constructor(props) {
@@ -14,7 +14,6 @@ class TaskForm extends React.Component {
       props.dataStore.task = task;
     }
 
-
     this.handleChange = this.handleChange.bind(this);
     this.handleDueDate = this.handleDueDate.bind(this);
     this.handleSchedule = this.handleSchedule.bind(this);
@@ -23,7 +22,7 @@ class TaskForm extends React.Component {
 
   handleChange(d) {
     const { task } = this.props.dataStore;
-    task.dueDate = d.setHours(23,59,59,999).valueOf();
+    task.dueDate = formatDate(d);
   }
 
   handleDueDate() {
@@ -31,7 +30,7 @@ class TaskForm extends React.Component {
     if (task.dueDate) {
       task.dueDate = null;
     } else {
-      task.dueDate = new Date().setHours(23,59,59,999).valueOf();
+      task.dueDate = formatDate(new Date());
       task.schedule = "";
     }
   }

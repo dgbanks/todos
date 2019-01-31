@@ -5,6 +5,7 @@ import uuid from "uuid";
 import NavigationUtils from "../utils/navigationUtils";
 import uiStore from "./uiStore";
 import Utils from "../utils/taskUtils";
+import { formatDate } from "../utils/timeUtils";
 
 class DataStore {
   @observable database = {};
@@ -75,16 +76,26 @@ class DataStore {
     return tasks.map(task => {
       const schedule = task.schedule ? Utils.parseSchedule(task.schedule) : "";
       if (schedule) {
-        const occurences = [];
-        for (var i = 0; i < 7; i++) {
-          const date = new Date().setDate(new Date().getDate() + i);
-          if (schedule.days.includes(new Date(date).getDay())) {
-            occurences.push(new Date(date).setHours(23,59,59,999).valueOf());
+        if (schedule.basis === "weekly") {
+          const occurences = [];
+          for (var i = 0; i < 7; i++) {
+            const date = new Date().setDate(new Date().getDate() + i);
+            if (schedule.days.includes(new Date(date).getDay())) {
+              occurences.push(formatDate(date));
+            }
           }
+          return occurences.map(occurence => (
+            Object.assign({}, task, { schedule, occurence })
+          ));
+        } else {
+          const occurences = [];
+          for (var i = 0; i < 32; i++) {
+
+          }
+          return occurences.map(occurence => (
+            Object.assign({}, task, { schedule, occurence })
+          ));
         }
-        return occurences.map(occurence => (
-          Object.assign({}, task, { schedule, occurence })
-        ));
       } else {
         return Object.assign({}, task, { schedule });
       }

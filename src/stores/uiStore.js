@@ -1,6 +1,7 @@
 import { observable, action, computed } from "mobx";
 import moment from "moment";
 import dataStore from "./dataStore";
+import NavigationUtils from "../utils/navigationUtils";
 
 class UIStore {
   @observable activeItem = null
@@ -11,8 +12,9 @@ class UIStore {
     return dataStore.data.filter(t => !(this.filter && t.complete))
   }
 
-  @action toggleFilter = () => {
-    this.filter = !this.filter;
+  @action toggleFilter = filter => {
+    this.filter = filter;
+    NavigationUtils.setParams({ filter });
   }
 
   @action activateItem = node => {

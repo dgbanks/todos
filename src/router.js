@@ -16,21 +16,22 @@ import uiStore from "./stores/uiStore";
 const Navigator = createStackNavigator({
   TaskList: {
     screen: TaskList,
-    navigationOptions: ({ navigation: { navigate, state } }) => {
+    navigationOptions: ({ navigation }) => {
+      const { getParam, state: { params: { toggleFilter } } } = navigation;
       return {
         headerTitle: "Tasks",
         headerLeft: (
           <Icon
             name="filter-list"
-            onPress={() => state.params.toggleFilter}
+            onPress={() => toggleFilter(!getParam("filter", false))}
             iconStyle={{ marginLeft:20, fontWeight:"bold" }}
-            color={state.params.filter ? "dodgerblue" : "#a4a4a4"}
+            color={getParam("filter", false) ? "dodgerblue" : "#a4a4a4"}
           />
         ),
         headerRight: (
           <Icon
             name="add"
-            onPress={() => navigate("TaskForm")}
+            onPress={() => navigation.navigate("TaskForm")}
             iconStyle={{ marginRight:20, fontWeight:"bold" }}
           />
         )
@@ -124,14 +125,11 @@ const getStateForAction = Navigator.router.getStateForAction;
 Navigator.router.getStateForAction = (action, state) => {
   let params = action.params || {};
   let storeParams = {};
+
+  if (action.type === "Navigation/INIT") {
+    storeParams = { toggleFilter: uiStore.toggleFilter };
+  }
   switch (action.routeName) {
-    case "TaskList": {
-      storeParams = {
-        filter: uiStore.filter,
-        toggleFilter: uiStore.toggleFilter,
-      };
-      break;
-    }
     case "TaskForm": {
       storeParams = {
         saveTask: params.task ? dataStore.updateTask : dataStore.createTask,

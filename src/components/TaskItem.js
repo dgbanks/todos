@@ -20,7 +20,8 @@ class TaskItem extends React.Component {
   snap({ nativeEvent: { state, x, targetSnapPointId } }) {
     const { uiStore } = this.props;
     if (state === "start" && x === 0) {
-      uiStore.activateItem(this.checkboxWrapper)
+        uiStore.deactivateItem();
+        uiStore.activateItem(this.checkboxWrapper);
     }
     if (state === "end" && targetSnapPointId === "closed") {
       uiStore.deactivateItem();
@@ -45,7 +46,7 @@ class TaskItem extends React.Component {
 
     return (
       <View style={container}>
-        <Button onPress={destroy} pose={Boolean(activeItem) ? "show" : "hide"} style={button}>
+        <Button onPress={destroy} pose={"show"} style={button}>
           <Icon name="delete" color="white" />
         </Button>
         <Interactable.View
@@ -53,7 +54,7 @@ class TaskItem extends React.Component {
           horizontalOnly={true}
           snapPoints={[{ x: 0, id: "closed" }, { x: -50, id: "open" }]}
           onDrag={this.snap}
-          boundaries={{ right:0 }}
+          boundaries={{ left:-50, right:0 }}
           style={{ width:"100%", backgroundColor:"white" }}
         >
           <Wrapper pose={task.complete ? "checked" : "unchecked"}>

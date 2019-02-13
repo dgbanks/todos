@@ -9,10 +9,6 @@ import { displayDate, displaySchedule } from "../utils/timeUtils";
 class TaskItem extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      // show: false,
-      pastDue: props.task.dueDate < new Date().valueOf()
-    };
     this.snap = this.snap.bind(this);
     this.onClick = this.onClick.bind(this);
   }
@@ -37,12 +33,8 @@ class TaskItem extends React.Component {
   }
 
   render() {
-    const { show, pastDue } = this.state;
     const { task, toggleComplete, destroy, navigate, uiStore: { activeItem } } = this.props;
     const { container, button, checkbox, details } = styles;
-    const detailStyles = Object.assign({}, details, {
-      color: pastDue ? "red" : "dodgerblue"
-    });
 
     return (
       <View style={container}>
@@ -57,9 +49,9 @@ class TaskItem extends React.Component {
           boundaries={{ left:-50, right:0 }}
           style={{ width:"100%", backgroundColor:"white" }}
         >
-          <Wrapper pose={task.complete ? "checked" : "unchecked"}>
+
             <CheckBox
-              title={<Title task={task} style={detailStyles} />}
+              title={<Title task={task} style={details} />}
               checked={Boolean(task.complete)}
               checkedIcon="check-square"
               checkedColor="dodgerblue"
@@ -68,7 +60,7 @@ class TaskItem extends React.Component {
               onLongPress={() => navigate("TaskForm")}
               containerStyle={checkbox}
             />
-          </Wrapper>
+
         </Interactable.View>
       </View>
     );
@@ -78,13 +70,13 @@ class TaskItem extends React.Component {
 export default inject("uiStore")(observer(TaskItem));
 
 const Title = ({task: { title, complete, dueDate, schedule, occurence }, style }) => (
-  <View style={{ flex:1, marginLeft: complete ? 13.25 : 15 }}>
+  <Wrapper style={{ flex:1 }} pose={complete ? "checked" : "unchecked"}>
     <Text style={{fontWeight:"500"}}>{title}</Text>
     <Text style={style}>
       {(dueDate || occurence) && displayDate(dueDate || occurence)}
       {(schedule && !occurence) && displaySchedule(schedule)}
     </Text>
-</View>
+  </Wrapper>
 );
 
 const Button = posed(TouchableOpacity)({
@@ -92,9 +84,9 @@ const Button = posed(TouchableOpacity)({
   hide: { opacity: 0 }
 });
 
-const Wrapper = posed(TouchableOpacity)({
-  checked: { opacity: .5 },
-  unchecked: { opacity: 1 }
+const Wrapper = posed(View)({
+  checked: { opacity: .5, x: 13.5, transition: { duration: 0 } },
+  unchecked: { opacity: 1, x: 15, transition: { duration: 0 } }
 });
 
 const styles = StyleSheet.create({

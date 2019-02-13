@@ -33,7 +33,7 @@ class TaskItem extends React.Component {
   }
 
   render() {
-    const { task, toggleComplete, destroy, navigate, uiStore: { activeItem } } = this.props;
+    const { task, toggleComplete, destroy, navigate } = this.props;
     const { container, button, checkbox, details } = styles;
 
     return (
@@ -49,18 +49,16 @@ class TaskItem extends React.Component {
           boundaries={{ left:-50, right:0 }}
           style={{ width:"100%", backgroundColor:"white" }}
         >
-
-            <CheckBox
-              title={<Title task={task} style={details} />}
-              checked={Boolean(task.complete)}
-              checkedIcon="check-square"
-              checkedColor="dodgerblue"
-              onPress={() => this.onClick(navigate)}
-              onIconPress={() => this.onClick(toggleComplete)}
-              onLongPress={() => navigate("TaskForm")}
-              containerStyle={checkbox}
-            />
-
+          <CheckBox
+            title={<Title task={task} style={details} />}
+            checked={Boolean(task.complete)}
+            checkedIcon="check-square"
+            checkedColor="dodgerblue"
+            onPress={() => this.onClick(navigate)}
+            onIconPress={() => this.onClick(toggleComplete)}
+            onLongPress={() => navigate("TaskForm")}
+            containerStyle={checkbox}
+          />
         </Interactable.View>
       </View>
     );

@@ -1,5 +1,5 @@
 import { observable, action, computed } from "mobx";
-import SQLite from "react-native-sqlite-storage";
+import { openDatabase } from "react-native-sqlite-storage";
 import moment from "moment";
 import uuid from "uuid";
 import NavigationUtils from "../utils/navigationUtils";
@@ -8,7 +8,7 @@ import Utils from "../utils/taskUtils";
 import { formatDate } from "../utils/timeUtils";
 
 class DataStore {
-  @observable database = {};
+  @observable database = openDatabase({ name: "database", location: "Library" });
   @observable data = [];
   @observable fetching = true;
   @observable filter = false;
@@ -17,46 +17,43 @@ class DataStore {
   @observable error = false;
 
   constructor(){
-    SQLite.openDatabase({ name: "database", location: "Library"}, db => {
-      // db.transaction(tx => tx.executeSql("DROP TABLE IF EXISTS Tasks"));
-      this.database = db;
-      db.transaction(tx => {
-        tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS Tasks ${Utils.schema}`,
-          [],
-          (_, res) => {
-            _.executeSql(
-              "SELECT * FROM Tasks",
-              [],
-              (_, res) => {
-                const today = moment().startOf("day");
-                const data = res.rows.raw().reduce((object, task) => {
-                  const { complete, completedAt } = task;
-                  if (!complete || (complete && completedAt > today)) {
-                    object.yes = [...object.yes, task];
-                  } else if (completedAt && completedAt < today) {
-                    object.no = [...object.no, task];
-                  }
-                  return object;
-                }, { yes: [], no: [] });
+    // db.transaction(tx => tx.executeSql("DROP TABLE IF EXISTS Tasks"));
+    this.database.transaction(tx => {
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS Tasks ${Utils.schema}`,
+        [],
+        (_, res) => {
+          _.executeSql(
+            "SELECT * FROM Tasks",
+            [],
+            (_, res) => {
+              const today = moment().startOf("day");
+              const data = res.rows.raw().reduce((object, task) => {
+                const { complete, completedAt } = task;
+                if (!complete || (complete && completedAt > today)) {
+                  object.yes = [...object.yes, task];
+                } else if (completedAt && completedAt < today) {
+                  object.no = [...object.no, task];
+                }
+                return object;
+              }, { yes: [], no: [] });
 
-                this.data = this.formatTasks(data.yes);
-                this.fetching = false;
-                data.no.each(task => { // delete day old completed tasks
-                  _.executeSql(
-                    "DELETE FROM Tasks WHERE id = ?",
-                    [task.id],
-                    (_, res) => {},
-                    (_, err) => {debugger}
-                  )
-                });
-              },
-              (_, err) => {debugger}
-            );
-          },
-          (_, err) => {debugger}
-        );
-      });
+              this.data = this.formatTasks(data.yes);
+              this.fetching = false;
+              data.no.each(task => { // delete day old completed tasks
+                _.executeSql(
+                  "DELETE FROM Tasks WHERE id = ?",
+                  [task.id],
+                  (_, res) => {},
+                  (_, err) => {debugger}
+                )
+              });
+            },
+            (_, err) => {debugger}
+          );
+        },
+        (_, err) => {debugger}
+      );
     });
   }
 
@@ -89,8 +86,21 @@ class DataStore {
           ));
         } else {
           const occurences = [];
+          const date = new Date().getDate();
           for (var i = 0; i < 32; i++) {
-
+            if (schedule.days.includes(i)) {
+              if (i < date) {
+                occurences.push(
+                  formatDate(new Date().setMonth(new Date().getMonth() + 1))
+                );
+              } else if (i === date) {
+                occurences.push(formatDate(new Date()));
+              } else {
+                occurences.push(
+                  formatDate(new Date())
+                );
+              }
+            }
           }
           return occurences.map(occurence => (
             Object.assign({}, task, { schedule, occurence })

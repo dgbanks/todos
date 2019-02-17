@@ -19,6 +19,15 @@ class TaskView extends React.Component {
             </View>
           )
         }
+
+        {
+          Boolean(task.dueDate) && (
+            <View style={styles.attribute}>
+              <Text style={styles.attrName}>Due Date</Text>
+              <Text>{task.dueDate}</Text>
+            </View>
+          )
+        }
       </View>
     );
   }
